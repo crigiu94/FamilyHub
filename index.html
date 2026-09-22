@@ -1,27 +1,433 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FamilyHub</title>
-  <style>
-    body {
-      font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      margin: 0;
-      background: #f4f6f8;
-      color: #1c2733;
-    }
-    h1 { margin-bottom: 0.25rem; }
-    p  { color: #52616f; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#2b6cb0">
+<title>FamilyHub</title>
+<style>
+  :root{
+    --bg:#f2f4f7;
+    --card:#ffffff;
+    --ink:#16212e;
+    --muted:#6b7a8c;
+    --line:#e2e7ee;
+    --accent:#2b6cb0;
+    --accent-soft:#e8f0fa;
+    --danger:#c0392b;
+    --radius:14px;
+    --shadow:0 1px 3px rgba(16,32,52,.08), 0 6px 18px rgba(16,32,52,.06);
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;padding:0}
+  body{
+    font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    background:var(--bg); color:var(--ink);
+    padding-bottom:calc(76px + env(safe-area-inset-bottom));
+    -webkit-font-smoothing:antialiased;
+  }
+  header{
+    position:sticky; top:0; z-index:20;
+    background:var(--accent); color:#fff;
+    padding:calc(14px + env(safe-area-inset-top)) 18px 14px;
+    box-shadow:0 2px 10px rgba(16,32,52,.12);
+  }
+  header h1{margin:0;font-size:1.15rem;letter-spacing:.2px}
+  header .sub{font-size:.78rem;opacity:.85;margin-top:2px}
+  main{padding:16px 14px 8px;max-width:760px;margin:0 auto}
+  .view{display:none}
+  .view.active{display:block}
+  h2.section{
+    font-size:.74rem; text-transform:uppercase; letter-spacing:.9px;
+    color:var(--muted); margin:20px 4px 8px; font-weight:700;
+  }
+  h2.section:first-child{margin-top:4px}
+  .card{
+    background:var(--card); border-radius:var(--radius);
+    box-shadow:var(--shadow); overflow:hidden;
+  }
+  .row{
+    display:flex; align-items:center; gap:12px;
+    padding:12px 14px; border-bottom:1px solid var(--line);
+  }
+  .row:last-child{border-bottom:none}
+  .emoji{font-size:1.35rem; width:30px; text-align:center; flex:none}
+  .grow{flex:1; min-width:0}
+  .title{font-weight:600; font-size:.95rem; word-break:break-word}
+  .meta{font-size:.78rem; color:var(--muted); margin-top:2px}
+  .badge{
+    font-size:.72rem; font-weight:700; padding:4px 9px;
+    border-radius:99px; background:var(--accent-soft); color:var(--accent);
+    white-space:nowrap; flex:none;
+  }
+  .badge.soon{background:#fdecea; color:var(--danger)}
+  .empty{padding:22px 16px; text-align:center; color:var(--muted); font-size:.88rem}
+  .iconbtn{
+    border:none; background:none; color:var(--muted);
+    font-size:1.05rem; cursor:pointer; padding:6px; border-radius:8px; flex:none;
+  }
+  .iconbtn:hover{background:var(--bg); color:var(--danger)}
+  /* checkbox */
+  .chk{
+    width:23px;height:23px;border:2px solid #c3ccd8;border-radius:7px;
+    display:flex;align-items:center;justify-content:center;cursor:pointer;
+    flex:none;font-size:.8rem;color:#fff;transition:.15s;
+  }
+  .chk.on{background:var(--accent);border-color:var(--accent)}
+  .done .title{text-decoration:line-through;color:var(--muted)}
+  /* forms */
+  .form{padding:14px; display:grid; gap:10px}
+  input,select,textarea{
+    width:100%; font:inherit; padding:11px 12px;
+    border:1px solid var(--line); border-radius:10px; background:#fbfcfd; color:inherit;
+  }
+  input:focus,select:focus,textarea:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  button.primary{
+    font:inherit; font-weight:600; border:none; cursor:pointer;
+    background:var(--accent); color:#fff; padding:12px; border-radius:10px;
+  }
+  button.primary:active{transform:scale(.99)}
+  button.ghost{
+    font:inherit;border:1px solid var(--line);background:var(--card);
+    color:var(--muted);padding:9px 12px;border-radius:10px;cursor:pointer;
+  }
+  .tabs{display:flex;gap:8px;overflow-x:auto;padding:0 4px 4px;margin-bottom:10px}
+  .tab{
+    border:1px solid var(--line);background:var(--card);color:var(--muted);
+    padding:7px 14px;border-radius:99px;font-size:.85rem;cursor:pointer;white-space:nowrap;
+  }
+  .tab.on{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600}
+  /* bottom nav */
+  nav{
+    position:fixed;bottom:0;left:0;right:0;z-index:30;
+    background:rgba(255,255,255,.96); backdrop-filter:blur(10px);
+    border-top:1px solid var(--line);
+    display:flex; padding-bottom:env(safe-area-inset-bottom);
+  }
+  nav button{
+    flex:1;border:none;background:none;cursor:pointer;
+    padding:9px 4px 11px; color:var(--muted); font:inherit; font-size:.7rem;
+  }
+  nav button .ic{display:block;font-size:1.3rem;margin-bottom:2px;filter:grayscale(1);opacity:.6}
+  nav button.on{color:var(--accent);font-weight:700}
+  nav button.on .ic{filter:none;opacity:1}
+  .hint{font-size:.76rem;color:var(--muted);padding:10px 6px;line-height:1.5}
+</style>
 </head>
 <body>
+
+<header>
   <h1>FamilyHub</h1>
-  <p>Funziona!</p>
+  <div class="sub" id="today"></div>
+</header>
+
+<main>
+
+  <!-- ============ HOME ============ -->
+  <section id="view-home" class="view active">
+    <h2 class="section">Prossimi eventi</h2>
+    <div class="card" id="home-events"></div>
+
+    <h2 class="section">Da fare</h2>
+    <div class="card" id="home-todo"></div>
+  </section>
+
+  <!-- ============ CALENDARIO ============ -->
+  <section id="view-cal" class="view">
+    <h2 class="section">Nuovo evento</h2>
+    <div class="card">
+      <form class="form" id="form-event">
+        <input id="ev-title" placeholder="Titolo (es. Compleanno mamma)" required>
+        <div class="two">
+          <input id="ev-date" type="date" required>
+          <select id="ev-cat">
+            <option value="birthday">🎂 Compleanno</option>
+            <option value="trip">✈️ Viaggio</option>
+            <option value="home">🏠 Casa</option>
+            <option value="person">👤 Personale</option>
+          </select>
+        </div>
+        <input id="ev-note" placeholder="Note (facoltativo)">
+        <button class="primary" type="submit">Aggiungi evento</button>
+      </form>
+    </div>
+
+    <h2 class="section">Tutti gli eventi</h2>
+    <div class="card" id="cal-list"></div>
+  </section>
+
+  <!-- ============ LISTE ============ -->
+  <section id="view-lists" class="view">
+    <div class="tabs" id="list-tabs"></div>
+
+    <div class="card">
+      <form class="form" id="form-item">
+        <input id="it-text" placeholder="Aggiungi elemento…" required>
+        <button class="primary" type="submit">Aggiungi</button>
+      </form>
+    </div>
+
+    <h2 class="section" id="list-title">Elementi</h2>
+    <div class="card" id="items-list"></div>
+
+    <div class="hint">Gli elementi spuntati restano in fondo finché non li elimini.</div>
+  </section>
+
+  <!-- ============ IMPOSTAZIONI ============ -->
+  <section id="view-set" class="view">
+    <h2 class="section">Chi sta usando l'app</h2>
+    <div class="card">
+      <div class="form">
+        <select id="who">
+          <option value="Cristina">Cristina</option>
+          <option value="Marito">Marito</option>
+        </select>
+        <div class="hint" style="padding:0">
+          Serve a ricordare chi ha aggiunto o spuntato una voce. Con Supabase diventerà un vero login.
+        </div>
+      </div>
+    </div>
+
+    <h2 class="section">Dati</h2>
+    <div class="card">
+      <div class="form">
+        <button class="ghost" id="btn-export">⬇️ Esporta dati (backup)</button>
+        <button class="ghost" id="btn-reset" style="color:var(--danger)">🗑️ Cancella tutti i dati</button>
+        <div class="hint" style="padding:0">
+          <strong>Versione 1:</strong> i dati sono salvati solo su questo dispositivo.
+          La condivisione fra te e tuo marito arriverà con il collegamento a Supabase.
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<nav>
+  <button data-go="home"  class="on"><span class="ic">🏠</span>Home</button>
+  <button data-go="cal"><span class="ic">📅</span>Calendario</button>
+  <button data-go="lists"><span class="ic">✅</span>Liste</button>
+  <button data-go="set"><span class="ic">⚙️</span>Impostazioni</button>
+</nav>
+
+<script>
+/* ---------------- stato ---------------- */
+const KEY = 'familyhub-v1';
+const CATS = {
+  birthday:{e:'🎂',n:'Compleanno'},
+  trip:    {e:'✈️',n:'Viaggio'},
+  home:    {e:'🏠',n:'Casa'},
+  person:  {e:'👤',n:'Personale'}
+};
+
+let db = load();
+
+function load(){
+  try{
+    const raw = localStorage.getItem(KEY);
+    if(raw) return JSON.parse(raw);
+  }catch(e){}
+  return {
+    who:'Cristina',
+    events:[],
+    lists:[
+      {id:'spesa', name:'🛒 Spesa', items:[]},
+      {id:'casa',  name:'🏠 Casa',  items:[]}
+    ],
+    activeList:'spesa'
+  };
+}
+function save(){ localStorage.setItem(KEY, JSON.stringify(db)); }
+const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2,7);
+
+/* ---------------- date ---------------- */
+function daysTo(iso){
+  const t = new Date(); t.setHours(0,0,0,0);
+  const d = new Date(iso+'T00:00:00');
+  return Math.round((d-t)/86400000);
+}
+function humanDays(n){
+  if(n === 0) return 'oggi';
+  if(n === 1) return 'domani';
+  if(n < 0)   return n === -1 ? 'ieri' : `${-n} giorni fa`;
+  return `fra ${n} giorni`;
+}
+function fmtDate(iso){
+  return new Date(iso+'T00:00:00')
+    .toLocaleDateString('it-IT',{weekday:'short',day:'numeric',month:'long',year:'numeric'});
+}
+
+/* ---------------- render ---------------- */
+function renderToday(){
+  document.getElementById('today').textContent =
+    new Date().toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+}
+
+function eventRow(ev, withDelete){
+  const n = daysTo(ev.date);
+  const c = CATS[ev.cat] || CATS.person;
+  return `
+    <div class="row">
+      <span class="emoji">${c.e}</span>
+      <div class="grow">
+        <div class="title">${esc(ev.title)}</div>
+        <div class="meta">${fmtDate(ev.date)}${ev.note ? ' · ' + esc(ev.note) : ''}</div>
+      </div>
+      <span class="badge ${n>=0 && n<=7 ? 'soon':''}">${humanDays(n)}</span>
+      ${withDelete ? `<button class="iconbtn" data-del-ev="${ev.id}">✕</button>` : ''}
+    </div>`;
+}
+
+function renderHome(){
+  const today = new Date(); today.setHours(0,0,0,0);
+  const up = db.events
+    .filter(e => daysTo(e.date) >= 0)
+    .sort((a,b) => a.date.localeCompare(b.date))
+    .slice(0,5);
+
+  document.getElementById('home-events').innerHTML =
+    up.length ? up.map(e => eventRow(e,false)).join('')
+              : `<div class="empty">Nessun evento in programma.<br>Aggiungine uno dal Calendario.</div>`;
+
+  const todo = [];
+  db.lists.forEach(l => l.items.filter(i => !i.done)
+    .forEach(i => todo.push({list:l.name, text:i.text})));
+
+  document.getElementById('home-todo').innerHTML =
+    todo.length
+      ? todo.slice(0,8).map(t => `
+          <div class="row">
+            <span class="emoji">☐</span>
+            <div class="grow">
+              <div class="title">${esc(t.text)}</div>
+              <div class="meta">${esc(t.list)}</div>
+            </div>
+          </div>`).join('')
+      : `<div class="empty">Tutto spuntato. 🎉</div>`;
+}
+
+function renderCal(){
+  const all = [...db.events].sort((a,b) => a.date.localeCompare(b.date));
+  document.getElementById('cal-list').innerHTML =
+    all.length ? all.map(e => eventRow(e,true)).join('')
+               : `<div class="empty">Nessun evento salvato.</div>`;
+}
+
+function renderLists(){
+  document.getElementById('list-tabs').innerHTML = db.lists.map(l =>
+    `<button class="tab ${l.id===db.activeList?'on':''}" data-list="${l.id}">${esc(l.name)}</button>`
+  ).join('');
+
+  const list = db.lists.find(l => l.id === db.activeList) || db.lists[0];
+  document.getElementById('list-title').textContent = list.name;
+
+  const items = [...list.items].sort((a,b) => (a.done?1:0) - (b.done?1:0));
+  document.getElementById('items-list').innerHTML =
+    items.length
+      ? items.map(i => `
+          <div class="row ${i.done?'done':''}">
+            <div class="chk ${i.done?'on':''}" data-toggle="${i.id}">${i.done?'✓':''}</div>
+            <div class="grow">
+              <div class="title">${esc(i.text)}</div>
+              <div class="meta">${i.done ? 'spuntato da '+esc(i.doneBy||'?') : 'aggiunto da '+esc(i.by||'?')}</div>
+            </div>
+            <button class="iconbtn" data-del-it="${i.id}">✕</button>
+          </div>`).join('')
+      : `<div class="empty">Lista vuota.</div>`;
+}
+
+function esc(s){
+  return String(s).replace(/[&<>"']/g, c =>
+    ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function renderAll(){ renderToday(); renderHome(); renderCal(); renderLists(); }
+
+/* ---------------- navigazione ---------------- */
+document.querySelectorAll('nav button').forEach(b => {
+  b.onclick = () => {
+    document.querySelectorAll('nav button').forEach(x => x.classList.remove('on'));
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    b.classList.add('on');
+    document.getElementById('view-' + b.dataset.go).classList.add('active');
+    window.scrollTo(0,0);
+  };
+});
+
+/* ---------------- eventi ---------------- */
+document.getElementById('form-event').onsubmit = e => {
+  e.preventDefault();
+  db.events.push({
+    id: uid(),
+    title: document.getElementById('ev-title').value.trim(),
+    date:  document.getElementById('ev-date').value,
+    cat:   document.getElementById('ev-cat').value,
+    note:  document.getElementById('ev-note').value.trim(),
+    by:    db.who
+  });
+  save(); e.target.reset(); renderAll();
+};
+
+/* ---------------- liste ---------------- */
+document.getElementById('form-item').onsubmit = e => {
+  e.preventDefault();
+  const list = db.lists.find(l => l.id === db.activeList);
+  list.items.push({
+    id: uid(),
+    text: document.getElementById('it-text').value.trim(),
+    done: false,
+    by: db.who
+  });
+  save(); e.target.reset(); renderAll();
+};
+
+/* click delegati */
+document.addEventListener('click', e => {
+  const t = e.target.closest('[data-toggle],[data-del-it],[data-del-ev],[data-list]');
+  if(!t) return;
+
+  if(t.dataset.list){
+    db.activeList = t.dataset.list; save(); renderLists(); return;
+  }
+  if(t.dataset.delEv){
+    db.events = db.events.filter(x => x.id !== t.dataset.delEv); save(); renderAll(); return;
+  }
+  const list = db.lists.find(l => l.id === db.activeList);
+  if(t.dataset.toggle){
+    const it = list.items.find(i => i.id === t.dataset.toggle);
+    it.done = !it.done;
+    it.doneBy = it.done ? db.who : null;
+    save(); renderAll(); return;
+  }
+  if(t.dataset.delIt){
+    list.items = list.items.filter(i => i.id !== t.dataset.delIt); save(); renderAll();
+  }
+});
+
+/* ---------------- impostazioni ---------------- */
+const who = document.getElementById('who');
+who.value = db.who;
+who.onchange = () => { db.who = who.value; save(); renderAll(); };
+
+document.getElementById('btn-export').onclick = () => {
+  const blob = new Blob([JSON.stringify(db,null,2)], {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'familyhub-backup.json';
+  a.click();
+};
+
+document.getElementById('btn-reset').onclick = () => {
+  if(confirm('Cancellare davvero tutti gli eventi e le liste?')){
+    localStorage.removeItem(KEY);
+    db = load();
+    who.value = db.who;
+    renderAll();
+  }
+};
+
+renderAll();
+</script>
 </body>
 </html>
