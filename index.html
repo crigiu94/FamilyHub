@@ -7,108 +7,76 @@
 <title>FamilyHub</title>
 <style>
   :root{
-    --bg:#f2f4f7;
-    --card:#ffffff;
-    --ink:#16212e;
-    --muted:#6b7a8c;
-    --line:#e2e7ee;
-    --accent:#2b6cb0;
-    --accent-soft:#e8f0fa;
-    --danger:#c0392b;
-    --radius:14px;
-    --shadow:0 1px 3px rgba(16,32,52,.08), 0 6px 18px rgba(16,32,52,.06);
+    --bg:#f2f4f7; --card:#fff; --ink:#16212e; --muted:#6b7a8c;
+    --line:#e2e7ee; --accent:#2b6cb0; --accent-soft:#e8f0fa; --danger:#c0392b;
+    --radius:14px; --shadow:0 1px 3px rgba(16,32,52,.08),0 6px 18px rgba(16,32,52,.06);
   }
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
   html,body{margin:0;padding:0}
-  body{
-    font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
-    background:var(--bg); color:var(--ink);
-    padding-bottom:calc(76px + env(safe-area-inset-bottom));
-    -webkit-font-smoothing:antialiased;
-  }
-  header{
-    position:sticky; top:0; z-index:20;
-    background:var(--accent); color:#fff;
+  body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased}
+  body.app{padding-bottom:calc(76px + env(safe-area-inset-bottom))}
+
+  /* ---------- LOGIN ---------- */
+  #login{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:24px}
+  #login .box{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);
+    padding:28px 22px;width:100%;max-width:360px}
+  #login h1{margin:0 0 4px;font-size:1.5rem;text-align:center}
+  #login .tag{text-align:center;color:var(--muted);font-size:.85rem;margin-bottom:22px}
+  #login form{display:grid;gap:10px}
+  .err{color:var(--danger);font-size:.82rem;min-height:18px;text-align:center}
+
+  header{position:sticky;top:0;z-index:20;background:var(--accent);color:#fff;
     padding:calc(14px + env(safe-area-inset-top)) 18px 14px;
-    box-shadow:0 2px 10px rgba(16,32,52,.12);
-  }
-  header h1{margin:0;font-size:1.15rem;letter-spacing:.2px}
+    box-shadow:0 2px 10px rgba(16,32,52,.12);display:flex;align-items:center;gap:10px}
+  header .grow{flex:1;min-width:0}
+  header h1{margin:0;font-size:1.15rem}
   header .sub{font-size:.78rem;opacity:.85;margin-top:2px}
+  .sync{font-size:.7rem;background:rgba(255,255,255,.18);padding:4px 9px;border-radius:99px}
+
   main{padding:16px 14px 8px;max-width:760px;margin:0 auto}
-  .view{display:none}
-  .view.active{display:block}
-  h2.section{
-    font-size:.74rem; text-transform:uppercase; letter-spacing:.9px;
-    color:var(--muted); margin:20px 4px 8px; font-weight:700;
-  }
+  .view{display:none} .view.active{display:block}
+  h2.section{font-size:.74rem;text-transform:uppercase;letter-spacing:.9px;
+    color:var(--muted);margin:20px 4px 8px;font-weight:700}
   h2.section:first-child{margin-top:4px}
-  .card{
-    background:var(--card); border-radius:var(--radius);
-    box-shadow:var(--shadow); overflow:hidden;
-  }
-  .row{
-    display:flex; align-items:center; gap:12px;
-    padding:12px 14px; border-bottom:1px solid var(--line);
-  }
+  .card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
+  .row{display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid var(--line)}
   .row:last-child{border-bottom:none}
-  .emoji{font-size:1.35rem; width:30px; text-align:center; flex:none}
-  .grow{flex:1; min-width:0}
-  .title{font-weight:600; font-size:.95rem; word-break:break-word}
-  .meta{font-size:.78rem; color:var(--muted); margin-top:2px}
-  .badge{
-    font-size:.72rem; font-weight:700; padding:4px 9px;
-    border-radius:99px; background:var(--accent-soft); color:var(--accent);
-    white-space:nowrap; flex:none;
-  }
-  .badge.soon{background:#fdecea; color:var(--danger)}
-  .empty{padding:22px 16px; text-align:center; color:var(--muted); font-size:.88rem}
-  .iconbtn{
-    border:none; background:none; color:var(--muted);
-    font-size:1.05rem; cursor:pointer; padding:6px; border-radius:8px; flex:none;
-  }
-  .iconbtn:hover{background:var(--bg); color:var(--danger)}
-  /* checkbox */
-  .chk{
-    width:23px;height:23px;border:2px solid #c3ccd8;border-radius:7px;
-    display:flex;align-items:center;justify-content:center;cursor:pointer;
-    flex:none;font-size:.8rem;color:#fff;transition:.15s;
-  }
+  .emoji{font-size:1.35rem;width:30px;text-align:center;flex:none}
+  .grow{flex:1;min-width:0}
+  .title{font-weight:600;font-size:.95rem;word-break:break-word}
+  .meta{font-size:.78rem;color:var(--muted);margin-top:2px}
+  .badge{font-size:.72rem;font-weight:700;padding:4px 9px;border-radius:99px;
+    background:var(--accent-soft);color:var(--accent);white-space:nowrap;flex:none}
+  .badge.soon{background:#fdecea;color:var(--danger)}
+  .empty{padding:22px 16px;text-align:center;color:var(--muted);font-size:.88rem}
+  .iconbtn{border:none;background:none;color:var(--muted);font-size:1.05rem;
+    cursor:pointer;padding:6px;border-radius:8px;flex:none}
+  .iconbtn:hover{background:var(--bg);color:var(--danger)}
+  .chk{width:23px;height:23px;border:2px solid #c3ccd8;border-radius:7px;display:flex;
+    align-items:center;justify-content:center;cursor:pointer;flex:none;font-size:.8rem;
+    color:#fff;transition:.15s}
   .chk.on{background:var(--accent);border-color:var(--accent)}
   .done .title{text-decoration:line-through;color:var(--muted)}
-  /* forms */
-  .form{padding:14px; display:grid; gap:10px}
-  input,select,textarea{
-    width:100%; font:inherit; padding:11px 12px;
-    border:1px solid var(--line); border-radius:10px; background:#fbfcfd; color:inherit;
-  }
-  input:focus,select:focus,textarea:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
+  .form{padding:14px;display:grid;gap:10px}
+  input,select{width:100%;font:inherit;padding:11px 12px;border:1px solid var(--line);
+    border-radius:10px;background:#fbfcfd;color:inherit}
+  input:focus,select:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
   .two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-  button.primary{
-    font:inherit; font-weight:600; border:none; cursor:pointer;
-    background:var(--accent); color:#fff; padding:12px; border-radius:10px;
-  }
-  button.primary:active{transform:scale(.99)}
-  button.ghost{
-    font:inherit;border:1px solid var(--line);background:var(--card);
-    color:var(--muted);padding:9px 12px;border-radius:10px;cursor:pointer;
-  }
+  button.primary{font:inherit;font-weight:600;border:none;cursor:pointer;background:var(--accent);
+    color:#fff;padding:12px;border-radius:10px}
+  button.primary:disabled{opacity:.6}
+  button.ghost{font:inherit;border:1px solid var(--line);background:var(--card);
+    color:var(--muted);padding:11px;border-radius:10px;cursor:pointer}
   .tabs{display:flex;gap:8px;overflow-x:auto;padding:0 4px 4px;margin-bottom:10px}
-  .tab{
-    border:1px solid var(--line);background:var(--card);color:var(--muted);
-    padding:7px 14px;border-radius:99px;font-size:.85rem;cursor:pointer;white-space:nowrap;
-  }
+  .tab{border:1px solid var(--line);background:var(--card);color:var(--muted);
+    padding:7px 14px;border-radius:99px;font-size:.85rem;cursor:pointer;white-space:nowrap}
   .tab.on{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600}
-  /* bottom nav */
-  nav{
-    position:fixed;bottom:0;left:0;right:0;z-index:30;
-    background:rgba(255,255,255,.96); backdrop-filter:blur(10px);
-    border-top:1px solid var(--line);
-    display:flex; padding-bottom:env(safe-area-inset-bottom);
-  }
-  nav button{
-    flex:1;border:none;background:none;cursor:pointer;
-    padding:9px 4px 11px; color:var(--muted); font:inherit; font-size:.7rem;
-  }
+  nav{position:fixed;bottom:0;left:0;right:0;z-index:30;background:rgba(255,255,255,.96);
+    backdrop-filter:blur(10px);border-top:1px solid var(--line);display:flex;
+    padding-bottom:env(safe-area-inset-bottom)}
+  nav button{flex:1;border:none;background:none;cursor:pointer;padding:9px 4px 11px;
+    color:var(--muted);font:inherit;font-size:.7rem}
   nav button .ic{display:block;font-size:1.3rem;margin-bottom:2px;filter:grayscale(1);opacity:.6}
   nav button.on{color:var(--accent);font-weight:700}
   nav button.on .ic{filter:none;opacity:1}
@@ -117,23 +85,39 @@
 </head>
 <body>
 
+<!-- =============== LOGIN =============== -->
+<div id="login">
+  <div class="box">
+    <h1>FamilyHub</h1>
+    <div class="tag">Calendario e liste di casa</div>
+    <form id="form-login">
+      <input id="lg-mail" type="email" placeholder="Email" autocomplete="username" required>
+      <input id="lg-pass" type="password" placeholder="Password" autocomplete="current-password" required>
+      <button class="primary" type="submit" id="lg-btn">Entra</button>
+      <div class="err" id="lg-err"></div>
+    </form>
+  </div>
+</div>
+
+<!-- =============== APP =============== -->
+<div id="app" style="display:none">
+
 <header>
-  <h1>FamilyHub</h1>
-  <div class="sub" id="today"></div>
+  <div class="grow">
+    <h1>FamilyHub</h1>
+    <div class="sub" id="today"></div>
+  </div>
+  <span class="sync" id="sync">···</span>
 </header>
 
 <main>
-
-  <!-- ============ HOME ============ -->
   <section id="view-home" class="view active">
     <h2 class="section">Prossimi eventi</h2>
     <div class="card" id="home-events"></div>
-
     <h2 class="section">Da fare</h2>
     <div class="card" id="home-todo"></div>
   </section>
 
-  <!-- ============ CALENDARIO ============ -->
   <section id="view-cal" class="view">
     <h2 class="section">Nuovo evento</h2>
     <div class="card">
@@ -152,282 +136,259 @@
         <button class="primary" type="submit">Aggiungi evento</button>
       </form>
     </div>
-
     <h2 class="section">Tutti gli eventi</h2>
     <div class="card" id="cal-list"></div>
   </section>
 
-  <!-- ============ LISTE ============ -->
   <section id="view-lists" class="view">
     <div class="tabs" id="list-tabs"></div>
-
     <div class="card">
       <form class="form" id="form-item">
         <input id="it-text" placeholder="Aggiungi elemento…" required>
         <button class="primary" type="submit">Aggiungi</button>
       </form>
     </div>
-
     <h2 class="section" id="list-title">Elementi</h2>
     <div class="card" id="items-list"></div>
-
-    <div class="hint">Gli elementi spuntati restano in fondo finché non li elimini.</div>
+    <div class="hint">Le modifiche compaiono in tempo reale anche sull'altro telefono.</div>
   </section>
 
-  <!-- ============ IMPOSTAZIONI ============ -->
   <section id="view-set" class="view">
-    <h2 class="section">Chi sta usando l'app</h2>
+    <h2 class="section">Account</h2>
     <div class="card">
-      <div class="form">
-        <select id="who">
-          <option value="Cristina">Cristina</option>
-          <option value="Marito">Marito</option>
-        </select>
-        <div class="hint" style="padding:0">
-          Serve a ricordare chi ha aggiunto o spuntato una voce. Con Supabase diventerà un vero login.
+      <div class="row">
+        <span class="emoji">👤</span>
+        <div class="grow">
+          <div class="title" id="me-name">—</div>
+          <div class="meta" id="me-mail">—</div>
         </div>
       </div>
     </div>
-
-    <h2 class="section">Dati</h2>
+    <h2 class="section">Nome visualizzato</h2>
+    <div class="card">
+      <form class="form" id="form-name">
+        <input id="set-name" placeholder="Es. Cristina" required>
+        <button class="primary" type="submit">Salva nome</button>
+      </form>
+    </div>
+    <h2 class="section">Sessione</h2>
     <div class="card">
       <div class="form">
-        <button class="ghost" id="btn-export">⬇️ Esporta dati (backup)</button>
-        <button class="ghost" id="btn-reset" style="color:var(--danger)">🗑️ Cancella tutti i dati</button>
+        <button class="ghost" id="btn-out" style="color:var(--danger)">Esci</button>
         <div class="hint" style="padding:0">
-          <strong>Versione 1:</strong> i dati sono salvati solo su questo dispositivo.
-          La condivisione fra te e tuo marito arriverà con il collegamento a Supabase.
+          I dati sono salvati su Supabase e condivisi fra gli account di famiglia.
         </div>
       </div>
     </div>
   </section>
-
 </main>
 
 <nav>
-  <button data-go="home"  class="on"><span class="ic">🏠</span>Home</button>
+  <button data-go="home" class="on"><span class="ic">🏠</span>Home</button>
   <button data-go="cal"><span class="ic">📅</span>Calendario</button>
   <button data-go="lists"><span class="ic">✅</span>Liste</button>
   <button data-go="set"><span class="ic">⚙️</span>Impostazioni</button>
 </nav>
+</div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-/* ---------------- stato ---------------- */
-const KEY = 'familyhub-v1';
+/* ==========================================================
+   ⚠️  INSERISCI QUI LE TUE DUE CHIAVI DI SUPABASE
+   Settings > API   →   Project URL  e  anon public
+   ========================================================== */
+const SUPABASE_URL  = 'https://bdftwbczimimjwzlhoyt.supabase.co';
+const SUPABASE_ANON = 'sb_publishable_IXipfmgVgXLugJdTXF2J9A_OyCFW-Io';
+/* ========================================================== */
+
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+
 const CATS = {
-  birthday:{e:'🎂',n:'Compleanno'},
-  trip:    {e:'✈️',n:'Viaggio'},
-  home:    {e:'🏠',n:'Casa'},
-  person:  {e:'👤',n:'Personale'}
+  birthday:{e:'🎂'}, trip:{e:'✈️'}, home:{e:'🏠'}, person:{e:'👤'}
 };
 
-let db = load();
+let me = null;
+let profiles = {};          // id -> nome
+let events = [], lists = [], items = [];
+let activeList = null;
 
-function load(){
-  try{
-    const raw = localStorage.getItem(KEY);
-    if(raw) return JSON.parse(raw);
-  }catch(e){}
-  return {
-    who:'Cristina',
-    events:[],
-    lists:[
-      {id:'spesa', name:'🛒 Spesa', items:[]},
-      {id:'casa',  name:'🏠 Casa',  items:[]}
-    ],
-    activeList:'spesa'
-  };
-}
-function save(){ localStorage.setItem(KEY, JSON.stringify(db)); }
-const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2,7);
+const $ = id => document.getElementById(id);
+const esc = s => String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const nameOf = id => profiles[id] || '—';
 
-/* ---------------- date ---------------- */
+/* ---------- date ---------- */
 function daysTo(iso){
-  const t = new Date(); t.setHours(0,0,0,0);
-  const d = new Date(iso+'T00:00:00');
-  return Math.round((d-t)/86400000);
+  const t=new Date(); t.setHours(0,0,0,0);
+  return Math.round((new Date(iso+'T00:00:00')-t)/86400000);
 }
 function humanDays(n){
-  if(n === 0) return 'oggi';
-  if(n === 1) return 'domani';
-  if(n < 0)   return n === -1 ? 'ieri' : `${-n} giorni fa`;
+  if(n===0) return 'oggi';
+  if(n===1) return 'domani';
+  if(n<0)   return n===-1 ? 'ieri' : `${-n} giorni fa`;
   return `fra ${n} giorni`;
 }
-function fmtDate(iso){
-  return new Date(iso+'T00:00:00')
-    .toLocaleDateString('it-IT',{weekday:'short',day:'numeric',month:'long',year:'numeric'});
+const fmtDate = iso => new Date(iso+'T00:00:00')
+  .toLocaleDateString('it-IT',{weekday:'short',day:'numeric',month:'long',year:'numeric'});
+
+/* ---------- AUTENTICAZIONE ---------- */
+$('form-login').onsubmit = async e => {
+  e.preventDefault();
+  $('lg-err').textContent = '';
+  $('lg-btn').disabled = true;
+  const { error } = await sb.auth.signInWithPassword({
+    email: $('lg-mail').value.trim(),
+    password: $('lg-pass').value
+  });
+  $('lg-btn').disabled = false;
+  if(error) $('lg-err').textContent = 'Email o password non corretti.';
+};
+
+$('btn-out').onclick = async () => { await sb.auth.signOut(); location.reload(); };
+
+sb.auth.onAuthStateChange((_e, session) => {
+  if(session?.user){ me = session.user; start(); }
+});
+sb.auth.getSession().then(({data}) => { if(data.session){ me = data.session.user; start(); } });
+
+/* ---------- AVVIO ---------- */
+async function start(){
+  $('login').style.display = 'none';
+  $('app').style.display = 'block';
+  document.body.classList.add('app');
+  $('today').textContent = new Date()
+    .toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  $('me-mail').textContent = me.email;
+  await loadAll();
+  subscribe();
 }
 
-/* ---------------- render ---------------- */
-function renderToday(){
-  document.getElementById('today').textContent =
-    new Date().toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+async function loadAll(){
+  $('sync').textContent = 'sincronizzo…';
+  const [p,e,l,i] = await Promise.all([
+    sb.from('profiles').select('*'),
+    sb.from('events').select('*').order('event_date'),
+    sb.from('lists').select('*').order('position'),
+    sb.from('list_items').select('*').order('created_at')
+  ]);
+  profiles = {}; (p.data||[]).forEach(r => profiles[r.id] = r.display_name);
+  events = e.data||[]; lists = l.data||[]; items = i.data||[];
+  if(!activeList && lists.length) activeList = lists[0].id;
+  $('me-name').textContent = nameOf(me.id);
+  $('set-name').value = nameOf(me.id);
+  $('sync').textContent = '● in linea';
+  renderAll();
 }
 
-function eventRow(ev, withDelete){
-  const n = daysTo(ev.date);
-  const c = CATS[ev.cat] || CATS.person;
-  return `
-    <div class="row">
-      <span class="emoji">${c.e}</span>
-      <div class="grow">
-        <div class="title">${esc(ev.title)}</div>
-        <div class="meta">${fmtDate(ev.date)}${ev.note ? ' · ' + esc(ev.note) : ''}</div>
-      </div>
-      <span class="badge ${n>=0 && n<=7 ? 'soon':''}">${humanDays(n)}</span>
-      ${withDelete ? `<button class="iconbtn" data-del-ev="${ev.id}">✕</button>` : ''}
-    </div>`;
+function subscribe(){
+  sb.channel('familyhub')
+    .on('postgres_changes',{event:'*',schema:'public'}, () => loadAll())
+    .subscribe();
 }
 
-function renderHome(){
-  const today = new Date(); today.setHours(0,0,0,0);
-  const up = db.events
-    .filter(e => daysTo(e.date) >= 0)
-    .sort((a,b) => a.date.localeCompare(b.date))
-    .slice(0,5);
-
-  document.getElementById('home-events').innerHTML =
-    up.length ? up.map(e => eventRow(e,false)).join('')
-              : `<div class="empty">Nessun evento in programma.<br>Aggiungine uno dal Calendario.</div>`;
-
-  const todo = [];
-  db.lists.forEach(l => l.items.filter(i => !i.done)
-    .forEach(i => todo.push({list:l.name, text:i.text})));
-
-  document.getElementById('home-todo').innerHTML =
-    todo.length
-      ? todo.slice(0,8).map(t => `
-          <div class="row">
-            <span class="emoji">☐</span>
-            <div class="grow">
-              <div class="title">${esc(t.text)}</div>
-              <div class="meta">${esc(t.list)}</div>
-            </div>
-          </div>`).join('')
-      : `<div class="empty">Tutto spuntato. 🎉</div>`;
+/* ---------- RENDER ---------- */
+function eventRow(ev, del){
+  const n = daysTo(ev.event_date);
+  const c = CATS[ev.category] || CATS.person;
+  return `<div class="row">
+    <span class="emoji">${c.e}</span>
+    <div class="grow">
+      <div class="title">${esc(ev.title)}</div>
+      <div class="meta">${fmtDate(ev.event_date)}${ev.note?' · '+esc(ev.note):''}</div>
+    </div>
+    <span class="badge ${n>=0&&n<=7?'soon':''}">${humanDays(n)}</span>
+    ${del?`<button class="iconbtn" data-del-ev="${ev.id}">✕</button>`:''}
+  </div>`;
 }
 
-function renderCal(){
-  const all = [...db.events].sort((a,b) => a.date.localeCompare(b.date));
-  document.getElementById('cal-list').innerHTML =
-    all.length ? all.map(e => eventRow(e,true)).join('')
-               : `<div class="empty">Nessun evento salvato.</div>`;
+function renderAll(){
+  const up = events.filter(e=>daysTo(e.event_date)>=0).slice(0,5);
+  $('home-events').innerHTML = up.length
+    ? up.map(e=>eventRow(e,false)).join('')
+    : `<div class="empty">Nessun evento in programma.</div>`;
+
+  const open = items.filter(i=>!i.done);
+  $('home-todo').innerHTML = open.length
+    ? open.slice(0,8).map(i=>{
+        const l = lists.find(x=>x.id===i.list_id);
+        return `<div class="row"><span class="emoji">☐</span>
+          <div class="grow"><div class="title">${esc(i.text)}</div>
+          <div class="meta">${esc(l?l.name:'')}</div></div></div>`;
+      }).join('')
+    : `<div class="empty">Tutto spuntato. 🎉</div>`;
+
+  $('cal-list').innerHTML = events.length
+    ? events.map(e=>eventRow(e,true)).join('')
+    : `<div class="empty">Nessun evento salvato.</div>`;
+
+  $('list-tabs').innerHTML = lists.map(l=>
+    `<button class="tab ${l.id===activeList?'on':''}" data-list="${l.id}">${esc(l.name)}</button>`).join('');
+  const cur = lists.find(l=>l.id===activeList);
+  $('list-title').textContent = cur ? cur.name : 'Elementi';
+
+  const its = items.filter(i=>i.list_id===activeList)
+                   .sort((a,b)=>(a.done?1:0)-(b.done?1:0));
+  $('items-list').innerHTML = its.length
+    ? its.map(i=>`<div class="row ${i.done?'done':''}">
+        <div class="chk ${i.done?'on':''}" data-toggle="${i.id}">${i.done?'✓':''}</div>
+        <div class="grow"><div class="title">${esc(i.text)}</div>
+        <div class="meta">${i.done?'spuntato da '+esc(nameOf(i.done_by)):'aggiunto da '+esc(nameOf(i.created_by))}</div></div>
+        <button class="iconbtn" data-del-it="${i.id}">✕</button></div>`).join('')
+    : `<div class="empty">Lista vuota.</div>`;
 }
 
-function renderLists(){
-  document.getElementById('list-tabs').innerHTML = db.lists.map(l =>
-    `<button class="tab ${l.id===db.activeList?'on':''}" data-list="${l.id}">${esc(l.name)}</button>`
-  ).join('');
+/* ---------- AZIONI ---------- */
+$('form-event').onsubmit = async e => {
+  e.preventDefault();
+  await sb.from('events').insert({
+    title: $('ev-title').value.trim(),
+    event_date: $('ev-date').value,
+    category: $('ev-cat').value,
+    note: $('ev-note').value.trim() || null
+  });
+  e.target.reset(); loadAll();
+};
 
-  const list = db.lists.find(l => l.id === db.activeList) || db.lists[0];
-  document.getElementById('list-title').textContent = list.name;
+$('form-item').onsubmit = async e => {
+  e.preventDefault();
+  await sb.from('list_items').insert({
+    list_id: activeList,
+    text: $('it-text').value.trim()
+  });
+  e.target.reset(); loadAll();
+};
 
-  const items = [...list.items].sort((a,b) => (a.done?1:0) - (b.done?1:0));
-  document.getElementById('items-list').innerHTML =
-    items.length
-      ? items.map(i => `
-          <div class="row ${i.done?'done':''}">
-            <div class="chk ${i.done?'on':''}" data-toggle="${i.id}">${i.done?'✓':''}</div>
-            <div class="grow">
-              <div class="title">${esc(i.text)}</div>
-              <div class="meta">${i.done ? 'spuntato da '+esc(i.doneBy||'?') : 'aggiunto da '+esc(i.by||'?')}</div>
-            </div>
-            <button class="iconbtn" data-del-it="${i.id}">✕</button>
-          </div>`).join('')
-      : `<div class="empty">Lista vuota.</div>`;
-}
+$('form-name').onsubmit = async e => {
+  e.preventDefault();
+  await sb.from('profiles').update({ display_name: $('set-name').value.trim() }).eq('id', me.id);
+  loadAll();
+};
 
-function esc(s){
-  return String(s).replace(/[&<>"']/g, c =>
-    ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-}
+document.addEventListener('click', async e => {
+  const t = e.target.closest('[data-toggle],[data-del-it],[data-del-ev],[data-list]');
+  if(!t) return;
+  if(t.dataset.list){ activeList = t.dataset.list; renderAll(); return; }
+  if(t.dataset.delEv){ await sb.from('events').delete().eq('id',t.dataset.delEv); loadAll(); return; }
+  if(t.dataset.delIt){ await sb.from('list_items').delete().eq('id',t.dataset.delIt); loadAll(); return; }
+  if(t.dataset.toggle){
+    const it = items.find(i=>i.id===t.dataset.toggle);
+    await sb.from('list_items').update({
+      done: !it.done,
+      done_by: !it.done ? me.id : null
+    }).eq('id', it.id);
+    loadAll();
+  }
+});
 
-function renderAll(){ renderToday(); renderHome(); renderCal(); renderLists(); }
-
-/* ---------------- navigazione ---------------- */
-document.querySelectorAll('nav button').forEach(b => {
-  b.onclick = () => {
-    document.querySelectorAll('nav button').forEach(x => x.classList.remove('on'));
-    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+/* ---------- NAV ---------- */
+document.querySelectorAll('nav button').forEach(b=>{
+  b.onclick=()=>{
+    document.querySelectorAll('nav button').forEach(x=>x.classList.remove('on'));
+    document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
     b.classList.add('on');
-    document.getElementById('view-' + b.dataset.go).classList.add('active');
+    $('view-'+b.dataset.go).classList.add('active');
     window.scrollTo(0,0);
   };
 });
-
-/* ---------------- eventi ---------------- */
-document.getElementById('form-event').onsubmit = e => {
-  e.preventDefault();
-  db.events.push({
-    id: uid(),
-    title: document.getElementById('ev-title').value.trim(),
-    date:  document.getElementById('ev-date').value,
-    cat:   document.getElementById('ev-cat').value,
-    note:  document.getElementById('ev-note').value.trim(),
-    by:    db.who
-  });
-  save(); e.target.reset(); renderAll();
-};
-
-/* ---------------- liste ---------------- */
-document.getElementById('form-item').onsubmit = e => {
-  e.preventDefault();
-  const list = db.lists.find(l => l.id === db.activeList);
-  list.items.push({
-    id: uid(),
-    text: document.getElementById('it-text').value.trim(),
-    done: false,
-    by: db.who
-  });
-  save(); e.target.reset(); renderAll();
-};
-
-/* click delegati */
-document.addEventListener('click', e => {
-  const t = e.target.closest('[data-toggle],[data-del-it],[data-del-ev],[data-list]');
-  if(!t) return;
-
-  if(t.dataset.list){
-    db.activeList = t.dataset.list; save(); renderLists(); return;
-  }
-  if(t.dataset.delEv){
-    db.events = db.events.filter(x => x.id !== t.dataset.delEv); save(); renderAll(); return;
-  }
-  const list = db.lists.find(l => l.id === db.activeList);
-  if(t.dataset.toggle){
-    const it = list.items.find(i => i.id === t.dataset.toggle);
-    it.done = !it.done;
-    it.doneBy = it.done ? db.who : null;
-    save(); renderAll(); return;
-  }
-  if(t.dataset.delIt){
-    list.items = list.items.filter(i => i.id !== t.dataset.delIt); save(); renderAll();
-  }
-});
-
-/* ---------------- impostazioni ---------------- */
-const who = document.getElementById('who');
-who.value = db.who;
-who.onchange = () => { db.who = who.value; save(); renderAll(); };
-
-document.getElementById('btn-export').onclick = () => {
-  const blob = new Blob([JSON.stringify(db,null,2)], {type:'application/json'});
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = 'familyhub-backup.json';
-  a.click();
-};
-
-document.getElementById('btn-reset').onclick = () => {
-  if(confirm('Cancellare davvero tutti gli eventi e le liste?')){
-    localStorage.removeItem(KEY);
-    db = load();
-    who.value = db.who;
-    renderAll();
-  }
-};
-
-renderAll();
 </script>
 </body>
 </html>
