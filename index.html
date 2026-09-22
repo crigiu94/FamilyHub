@@ -17,7 +17,6 @@
     background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased}
   body.app{padding-bottom:calc(76px + env(safe-area-inset-bottom))}
 
-  /* ---------- LOGIN ---------- */
   #login{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:24px}
   #login .box{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);
     padding:28px 22px;width:100%;max-width:360px}
@@ -33,6 +32,11 @@
   header h1{margin:0;font-size:1.15rem}
   header .sub{font-size:.78rem;opacity:.85;margin-top:2px}
   .sync{font-size:.7rem;background:rgba(255,255,255,.18);padding:4px 9px;border-radius:99px}
+
+  /* banda errore */
+  #bar{display:none;background:#fdecea;color:var(--danger);font-size:.8rem;
+    padding:10px 14px;border-bottom:1px solid #f5c6c0;line-height:1.45}
+  #bar.on{display:block}
 
   main{padding:16px 14px 8px;max-width:760px;margin:0 auto}
   .view{display:none} .view.active{display:block}
@@ -53,11 +57,17 @@
   .iconbtn{border:none;background:none;color:var(--muted);font-size:1.05rem;
     cursor:pointer;padding:6px;border-radius:8px;flex:none}
   .iconbtn:hover{background:var(--bg);color:var(--danger)}
-  .chk{width:23px;height:23px;border:2px solid #c3ccd8;border-radius:7px;display:flex;
-    align-items:center;justify-content:center;cursor:pointer;flex:none;font-size:.8rem;
-    color:#fff;transition:.15s}
+
+  /* area tappabile ampia per la spunta */
+  .tap{display:flex;align-items:center;gap:12px;flex:1;min-width:0;
+       cursor:pointer;padding:2px 0;background:none;border:none;font:inherit;text-align:left}
+  .chk{width:24px;height:24px;border:2px solid #c3ccd8;border-radius:7px;display:flex;
+    align-items:center;justify-content:center;flex:none;font-size:.85rem;
+    color:#fff;transition:.15s;pointer-events:none}
   .chk.on{background:var(--accent);border-color:var(--accent)}
+  .row.busy{opacity:.45}
   .done .title{text-decoration:line-through;color:var(--muted)}
+
   .form{padding:14px;display:grid;gap:10px}
   input,select{width:100%;font:inherit;padding:11px 12px;border:1px solid var(--line);
     border-radius:10px;background:#fbfcfd;color:inherit}
@@ -81,11 +91,11 @@
   nav button.on{color:var(--accent);font-weight:700}
   nav button.on .ic{filter:none;opacity:1}
   .hint{font-size:.76rem;color:var(--muted);padding:10px 6px;line-height:1.5}
+  code{background:var(--bg);padding:1px 5px;border-radius:5px;font-size:.92em}
 </style>
 </head>
 <body>
 
-<!-- =============== LOGIN =============== -->
 <div id="login">
   <div class="box">
     <h1>FamilyHub</h1>
@@ -99,7 +109,6 @@
   </div>
 </div>
 
-<!-- =============== APP =============== -->
 <div id="app" style="display:none">
 
 <header>
@@ -109,6 +118,8 @@
   </div>
   <span class="sync" id="sync">···</span>
 </header>
+
+<div id="bar"></div>
 
 <main>
   <section id="view-home" class="view active">
@@ -150,7 +161,7 @@
     </div>
     <h2 class="section" id="list-title">Elementi</h2>
     <div class="card" id="items-list"></div>
-    <div class="hint">Le modifiche compaiono in tempo reale anche sull'altro telefono.</div>
+    <div class="hint">Tocca la riga per spuntarla. Le modifiche compaiono anche sull'altro telefono.</div>
   </section>
 
   <section id="view-set" class="view">
@@ -171,13 +182,19 @@
         <button class="primary" type="submit">Salva nome</button>
       </form>
     </div>
+    <h2 class="section">Diagnostica</h2>
+    <div class="card">
+      <div class="form">
+        <button class="ghost" id="btn-test">Verifica permessi database</button>
+        <div class="hint" style="padding:0" id="test-out">
+          Controlla se l'app può leggere e modificare i dati.
+        </div>
+      </div>
+    </div>
     <h2 class="section">Sessione</h2>
     <div class="card">
       <div class="form">
         <button class="ghost" id="btn-out" style="color:var(--danger)">Esci</button>
-        <div class="hint" style="padding:0">
-          I dati sono salvati su Supabase e condivisi fra gli account di famiglia.
-        </div>
       </div>
     </div>
   </section>
@@ -195,7 +212,6 @@
 <script>
 /* ==========================================================
    ⚠️  INSERISCI QUI LE TUE DUE CHIAVI DI SUPABASE
-   Settings > API   →   Project URL  e  anon public
    ========================================================== */
 const SUPABASE_URL  = 'https://bdftwbczimimjwzlhoyt.supabase.co';
 const SUPABASE_ANON = 'sb_publishable_IXipfmgVgXLugJdTXF2J9A_OyCFW-Io';
@@ -203,20 +219,22 @@ const SUPABASE_ANON = 'sb_publishable_IXipfmgVgXLugJdTXF2J9A_OyCFW-Io';
 
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
 
-const CATS = {
-  birthday:{e:'🎂'}, trip:{e:'✈️'}, home:{e:'🏠'}, person:{e:'👤'}
-};
+const CATS = { birthday:{e:'🎂'}, trip:{e:'✈️'}, home:{e:'🏠'}, person:{e:'👤'} };
 
-let me = null;
-let profiles = {};          // id -> nome
-let events = [], lists = [], items = [];
-let activeList = null;
+let me=null, profiles={}, events=[], lists=[], items=[], activeList=null;
 
 const $ = id => document.getElementById(id);
 const esc = s => String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const nameOf = id => profiles[id] || '—';
 
-/* ---------- date ---------- */
+function showErr(msg){
+  const b=$('bar'); b.className='on';
+  b.innerHTML='⚠️ '+esc(msg)+' — <span style="text-decoration:underline;cursor:pointer" id="bar-x">chiudi</span>';
+  $('bar-x').onclick=()=>b.className='';
+  console.error('FamilyHub:', msg);
+}
+function clearErr(){ $('bar').className=''; }
+
 function daysTo(iso){
   const t=new Date(); t.setHours(0,0,0,0);
   return Math.round((new Date(iso+'T00:00:00')-t)/86400000);
@@ -224,96 +242,89 @@ function daysTo(iso){
 function humanDays(n){
   if(n===0) return 'oggi';
   if(n===1) return 'domani';
-  if(n<0)   return n===-1 ? 'ieri' : `${-n} giorni fa`;
+  if(n<0) return n===-1?'ieri':`${-n} giorni fa`;
   return `fra ${n} giorni`;
 }
 const fmtDate = iso => new Date(iso+'T00:00:00')
   .toLocaleDateString('it-IT',{weekday:'short',day:'numeric',month:'long',year:'numeric'});
 
-/* ---------- AUTENTICAZIONE ---------- */
+/* ---------- LOGIN ---------- */
 $('form-login').onsubmit = async e => {
   e.preventDefault();
-  $('lg-err').textContent = '';
-  $('lg-btn').disabled = true;
+  $('lg-err').textContent=''; $('lg-btn').disabled=true;
   const { error } = await sb.auth.signInWithPassword({
-    email: $('lg-mail').value.trim(),
-    password: $('lg-pass').value
-  });
-  $('lg-btn').disabled = false;
+    email: $('lg-mail').value.trim(), password: $('lg-pass').value });
+  $('lg-btn').disabled=false;
   if(error) $('lg-err').textContent = 'Email o password non corretti.';
 };
-
 $('btn-out').onclick = async () => { await sb.auth.signOut(); location.reload(); };
 
-sb.auth.onAuthStateChange((_e, session) => {
-  if(session?.user){ me = session.user; start(); }
-});
-sb.auth.getSession().then(({data}) => { if(data.session){ me = data.session.user; start(); } });
+sb.auth.onAuthStateChange((_e,s)=>{ if(s?.user){ me=s.user; start(); }});
+sb.auth.getSession().then(({data})=>{ if(data.session){ me=data.session.user; start(); }});
 
 /* ---------- AVVIO ---------- */
 async function start(){
-  $('login').style.display = 'none';
-  $('app').style.display = 'block';
+  $('login').style.display='none';
+  $('app').style.display='block';
   document.body.classList.add('app');
-  $('today').textContent = new Date()
+  $('today').textContent=new Date()
     .toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
-  $('me-mail').textContent = me.email;
+  $('me-mail').textContent=me.email;
   await loadAll();
   subscribe();
 }
 
 async function loadAll(){
-  $('sync').textContent = 'sincronizzo…';
+  $('sync').textContent='sincronizzo…';
   const [p,e,l,i] = await Promise.all([
     sb.from('profiles').select('*'),
     sb.from('events').select('*').order('event_date'),
     sb.from('lists').select('*').order('position'),
     sb.from('list_items').select('*').order('created_at')
   ]);
-  profiles = {}; (p.data||[]).forEach(r => profiles[r.id] = r.display_name);
-  events = e.data||[]; lists = l.data||[]; items = i.data||[];
-  if(!activeList && lists.length) activeList = lists[0].id;
-  $('me-name').textContent = nameOf(me.id);
-  $('set-name').value = nameOf(me.id);
-  $('sync').textContent = '● in linea';
+  const bad = [p,e,l,i].find(r=>r.error);
+  if(bad){ showErr('Lettura dati: '+bad.error.message); }
+  profiles={}; (p.data||[]).forEach(r=>profiles[r.id]=r.display_name);
+  events=e.data||[]; lists=l.data||[]; items=i.data||[];
+  if(!activeList && lists.length) activeList=lists[0].id;
+  $('me-name').textContent=nameOf(me.id);
+  if(!$('set-name').value) $('set-name').value=nameOf(me.id)==='—'?'':nameOf(me.id);
+  $('sync').textContent='● in linea';
   renderAll();
 }
 
 function subscribe(){
   sb.channel('familyhub')
-    .on('postgres_changes',{event:'*',schema:'public'}, () => loadAll())
+    .on('postgres_changes',{event:'*',schema:'public'},()=>loadAll())
     .subscribe();
 }
 
 /* ---------- RENDER ---------- */
-function eventRow(ev, del){
-  const n = daysTo(ev.event_date);
-  const c = CATS[ev.category] || CATS.person;
+function eventRow(ev,del){
+  const n=daysTo(ev.event_date);
+  const c=CATS[ev.category]||CATS.person;
   return `<div class="row">
     <span class="emoji">${c.e}</span>
-    <div class="grow">
-      <div class="title">${esc(ev.title)}</div>
-      <div class="meta">${fmtDate(ev.event_date)}${ev.note?' · '+esc(ev.note):''}</div>
-    </div>
+    <div class="grow"><div class="title">${esc(ev.title)}</div>
+    <div class="meta">${fmtDate(ev.event_date)}${ev.note?' · '+esc(ev.note):''}</div></div>
     <span class="badge ${n>=0&&n<=7?'soon':''}">${humanDays(n)}</span>
     ${del?`<button class="iconbtn" data-del-ev="${ev.id}">✕</button>`:''}
   </div>`;
 }
 
 function renderAll(){
-  const up = events.filter(e=>daysTo(e.event_date)>=0).slice(0,5);
+  const up=events.filter(e=>daysTo(e.event_date)>=0).slice(0,5);
   $('home-events').innerHTML = up.length
     ? up.map(e=>eventRow(e,false)).join('')
     : `<div class="empty">Nessun evento in programma.</div>`;
 
-  const open = items.filter(i=>!i.done);
+  const open=items.filter(i=>!i.done);
   $('home-todo').innerHTML = open.length
     ? open.slice(0,8).map(i=>{
-        const l = lists.find(x=>x.id===i.list_id);
+        const l=lists.find(x=>x.id===i.list_id);
         return `<div class="row"><span class="emoji">☐</span>
           <div class="grow"><div class="title">${esc(i.text)}</div>
-          <div class="meta">${esc(l?l.name:'')}</div></div></div>`;
-      }).join('')
+          <div class="meta">${esc(l?l.name:'')}</div></div></div>`;}).join('')
     : `<div class="empty">Tutto spuntato. 🎉</div>`;
 
   $('cal-list').innerHTML = events.length
@@ -322,16 +333,17 @@ function renderAll(){
 
   $('list-tabs').innerHTML = lists.map(l=>
     `<button class="tab ${l.id===activeList?'on':''}" data-list="${l.id}">${esc(l.name)}</button>`).join('');
-  const cur = lists.find(l=>l.id===activeList);
-  $('list-title').textContent = cur ? cur.name : 'Elementi';
+  const cur=lists.find(l=>l.id===activeList);
+  $('list-title').textContent = cur?cur.name:'Elementi';
 
-  const its = items.filter(i=>i.list_id===activeList)
-                   .sort((a,b)=>(a.done?1:0)-(b.done?1:0));
+  const its=items.filter(i=>i.list_id===activeList).sort((a,b)=>(a.done?1:0)-(b.done?1:0));
   $('items-list').innerHTML = its.length
-    ? its.map(i=>`<div class="row ${i.done?'done':''}">
-        <div class="chk ${i.done?'on':''}" data-toggle="${i.id}">${i.done?'✓':''}</div>
-        <div class="grow"><div class="title">${esc(i.text)}</div>
-        <div class="meta">${i.done?'spuntato da '+esc(nameOf(i.done_by)):'aggiunto da '+esc(nameOf(i.created_by))}</div></div>
+    ? its.map(i=>`<div class="row ${i.done?'done':''}" id="row-${i.id}">
+        <button class="tap" data-toggle="${i.id}">
+          <span class="chk ${i.done?'on':''}">${i.done?'✓':''}</span>
+          <span class="grow"><span class="title">${esc(i.text)}</span>
+          <span class="meta" style="display:block">${i.done?'spuntato da '+esc(nameOf(i.done_by)):'aggiunto da '+esc(nameOf(i.created_by))}</span></span>
+        </button>
         <button class="iconbtn" data-del-it="${i.id}">✕</button></div>`).join('')
     : `<div class="empty">Lista vuota.</div>`;
 }
@@ -339,47 +351,95 @@ function renderAll(){
 /* ---------- AZIONI ---------- */
 $('form-event').onsubmit = async e => {
   e.preventDefault();
-  await sb.from('events').insert({
+  const { error } = await sb.from('events').insert({
     title: $('ev-title').value.trim(),
     event_date: $('ev-date').value,
     category: $('ev-cat').value,
-    note: $('ev-note').value.trim() || null
-  });
-  e.target.reset(); loadAll();
+    note: $('ev-note').value.trim()||null });
+  if(error) return showErr('Salvataggio evento: '+error.message);
+  clearErr(); e.target.reset(); loadAll();
 };
 
 $('form-item').onsubmit = async e => {
   e.preventDefault();
-  await sb.from('list_items').insert({
-    list_id: activeList,
-    text: $('it-text').value.trim()
-  });
-  e.target.reset(); loadAll();
+  const { error } = await sb.from('list_items')
+    .insert({ list_id: activeList, text: $('it-text').value.trim() });
+  if(error) return showErr('Salvataggio elemento: '+error.message);
+  clearErr(); e.target.reset(); loadAll();
 };
 
 $('form-name').onsubmit = async e => {
   e.preventDefault();
-  await sb.from('profiles').update({ display_name: $('set-name').value.trim() }).eq('id', me.id);
-  loadAll();
+  const name=$('set-name').value.trim();
+  let { error } = await sb.from('profiles').update({display_name:name}).eq('id',me.id);
+  if(error){
+    const r = await sb.from('profiles').insert({id:me.id, display_name:name});
+    error = r.error;
+  }
+  if(error) return showErr('Salvataggio nome: '+error.message);
+  clearErr(); loadAll();
 };
+
+/* toggle spunta */
+async function toggleItem(id){
+  const it = items.find(i=>i.id===id);
+  if(!it) return showErr('Elemento non trovato, ricarico.'), loadAll();
+
+  const row=$('row-'+id); if(row) row.classList.add('busy');
+  const next = !it.done;
+
+  const { data, error } = await sb.from('list_items')
+    .update({ done: next, done_by: next ? me.id : null })
+    .eq('id', id)
+    .select();
+
+  if(row) row.classList.remove('busy');
+
+  if(error) return showErr('Spunta non salvata: '+error.message);
+  if(!data || data.length===0)
+    return showErr('Spunta rifiutata dal database: manca il permesso di modifica (RLS) su list_items.');
+
+  clearErr();
+  it.done = next;
+  it.done_by = next ? me.id : null;
+  renderAll();
+  loadAll();
+}
 
 document.addEventListener('click', async e => {
   const t = e.target.closest('[data-toggle],[data-del-it],[data-del-ev],[data-list]');
   if(!t) return;
-  if(t.dataset.list){ activeList = t.dataset.list; renderAll(); return; }
-  if(t.dataset.delEv){ await sb.from('events').delete().eq('id',t.dataset.delEv); loadAll(); return; }
-  if(t.dataset.delIt){ await sb.from('list_items').delete().eq('id',t.dataset.delIt); loadAll(); return; }
-  if(t.dataset.toggle){
-    const it = items.find(i=>i.id===t.dataset.toggle);
-    await sb.from('list_items').update({
-      done: !it.done,
-      done_by: !it.done ? me.id : null
-    }).eq('id', it.id);
-    loadAll();
+  if(t.dataset.list){ activeList=t.dataset.list; renderAll(); return; }
+  if(t.dataset.delEv){
+    const {error}=await sb.from('events').delete().eq('id',t.dataset.delEv);
+    if(error) return showErr('Eliminazione: '+error.message);
+    loadAll(); return;
   }
+  if(t.dataset.delIt){
+    const {error}=await sb.from('list_items').delete().eq('id',t.dataset.delIt);
+    if(error) return showErr('Eliminazione: '+error.message);
+    loadAll(); return;
+  }
+  if(t.dataset.toggle){ toggleItem(t.dataset.toggle); }
 });
 
-/* ---------- NAV ---------- */
+/* diagnostica */
+$('btn-test').onclick = async () => {
+  const out=$('test-out'); out.textContent='Verifica in corso…';
+  const lines=[];
+  const r1 = await sb.from('list_items').select('id').limit(1);
+  lines.push(r1.error ? '❌ lettura list_items: '+r1.error.message : '✅ lettura list_items');
+  if(r1.data && r1.data.length){
+    const id=r1.data[0].id;
+    const r2 = await sb.from('list_items').update({done:false}).eq('id',id).select();
+    if(r2.error) lines.push('❌ modifica: '+r2.error.message);
+    else if(!r2.data.length) lines.push('❌ modifica bloccata: manca la policy UPDATE su list_items');
+    else lines.push('✅ modifica consentita');
+  } else lines.push('ℹ️ nessun elemento da testare: aggiungine uno');
+  lines.push('👤 utente: '+(me?me.email:'non autenticato'));
+  out.innerHTML=lines.join('<br>');
+};
+
 document.querySelectorAll('nav button').forEach(b=>{
   b.onclick=()=>{
     document.querySelectorAll('nav button').forEach(x=>x.classList.remove('on'));
