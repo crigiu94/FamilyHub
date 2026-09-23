@@ -9,7 +9,7 @@
   :root{
     --bg:#f2f4f7; --card:#fff; --ink:#16212e; --muted:#6b7a8c;
     --line:#e2e7ee; --accent:#2b6cb0; --accent-soft:#e8f0fa; --danger:#c0392b;
-    --warn:#b7791f; --warn-soft:#fdf3e0;
+    --warn:#b7791f; --warn-soft:#fdf3e0; --holi:#8a94a6;
     --radius:14px; --shadow:0 1px 3px rgba(16,32,52,.08),0 6px 18px rgba(16,32,52,.06);
   }
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -38,11 +38,10 @@
     padding:10px 14px;border-bottom:1px solid #f5c6c0;line-height:1.45}
   #bar.on{display:block}
 
-  main{padding:16px 14px 8px;max-width:760px;margin:0 auto}
+  main{padding:16px 14px 8px;max-width:820px;margin:0 auto}
   .view{display:none} .view.active{display:block}
   h2.section{font-size:.74rem;text-transform:uppercase;letter-spacing:.9px;
-    color:var(--muted);margin:20px 4px 8px;font-weight:700;
-    display:flex;align-items:center;gap:8px}
+    color:var(--muted);margin:20px 4px 8px;font-weight:700;display:flex;align-items:center;gap:8px}
   h2.section .grow{flex:1}
   h2.section:first-child{margin-top:4px}
   .linkbtn{border:none;background:none;color:var(--accent);font:inherit;font-size:.74rem;
@@ -63,17 +62,18 @@
     padding:2px 8px;border-radius:99px;font-weight:600}
   .chip.due{background:var(--warn-soft);color:var(--warn)}
   .chip.late{background:#fdecea;color:var(--danger)}
+  .chip.grey{background:#eef1f5;color:var(--muted)}
   .empty{padding:22px 16px;text-align:center;color:var(--muted);font-size:.88rem}
   .iconbtn{border:none;background:none;color:var(--muted);font-size:1.05rem;
     cursor:pointer;padding:6px;border-radius:8px;flex:none}
   .iconbtn:hover{background:var(--bg);color:var(--danger)}
   .iconbtn.neutral:hover{color:var(--accent)}
 
-  .tap{display:flex;align-items:flex-start;gap:12px;flex:1;min-width:0;
-       cursor:pointer;padding:2px 0;background:none;border:none;font:inherit;text-align:left}
+  .tap{display:flex;align-items:flex-start;gap:12px;flex:1;min-width:0;cursor:pointer;
+    padding:2px 0;background:none;border:none;font:inherit;text-align:left;color:inherit}
   .chk{width:24px;height:24px;border:2px solid #c3ccd8;border-radius:7px;display:flex;
-    align-items:center;justify-content:center;flex:none;font-size:.85rem;
-    color:#fff;transition:.15s;pointer-events:none;margin-top:1px}
+    align-items:center;justify-content:center;flex:none;font-size:.85rem;color:#fff;
+    transition:.15s;pointer-events:none;margin-top:1px}
   .chk.on{background:var(--accent);border-color:var(--accent)}
   .row.busy{opacity:.45}
   .done .title{text-decoration:line-through;color:var(--muted)}
@@ -83,7 +83,10 @@
     border-radius:10px;background:#fbfcfd;color:inherit}
   input:focus,select:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
   .two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .three{display:grid;grid-template-columns:auto 1fr 1fr;gap:10px;align-items:center}
   label.fld{font-size:.74rem;color:var(--muted);font-weight:600;margin-bottom:-4px}
+  label.sw{display:flex;align-items:center;gap:9px;font-size:.9rem;cursor:pointer}
+  label.sw input{width:auto;margin:0}
   button.primary{font:inherit;font-weight:600;border:none;cursor:pointer;background:var(--accent);
     color:#fff;padding:12px;border-radius:10px}
   button.primary:disabled{opacity:.6}
@@ -100,6 +103,61 @@
   .tab.on{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600}
   .tab.add{color:var(--accent);font-weight:700}
 
+  .filters{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:12px 14px;
+    border-bottom:1px solid var(--line)}
+  .filters select{padding:8px 10px;font-size:.85rem}
+  .filters .full{grid-column:1/-1}
+
+  /* ---- calendario ---- */
+  .calbar{display:flex;align-items:center;gap:6px;padding:10px 12px;border-bottom:1px solid var(--line)}
+  .calbar .lbl{flex:1;text-align:center;font-weight:700;font-size:.95rem;text-transform:capitalize}
+  .navb{border:1px solid var(--line);background:var(--card);color:var(--ink);width:34px;height:34px;
+    border-radius:9px;cursor:pointer;font-size:1rem;flex:none}
+  .segs{display:flex;gap:6px;padding:10px 12px}
+  .seg{flex:1;border:1px solid var(--line);background:var(--card);color:var(--muted);
+    padding:7px;border-radius:9px;font-size:.82rem;cursor:pointer}
+  .seg.on{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600}
+
+  .dow{display:grid;grid-template-columns:repeat(7,1fr);padding:6px 8px 2px;
+    font-size:.68rem;color:var(--muted);text-align:center;font-weight:700;text-transform:uppercase}
+  .grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;padding:6px 8px 12px}
+  .day{min-height:62px;border-radius:9px;background:#fafbfc;padding:4px 4px 3px;cursor:pointer;
+    border:1px solid transparent;display:flex;flex-direction:column;gap:2px;overflow:hidden}
+  .day:hover{border-color:var(--line)}
+  .day.out{opacity:.35}
+  .day.today{border-color:var(--accent);background:var(--accent-soft)}
+  .day.sel{outline:2px solid var(--accent)}
+  .dnum{font-size:.76rem;font-weight:700}
+  .day.holi .dnum{color:var(--danger)}
+  .dots{display:flex;flex-wrap:wrap;gap:2px}
+  .dot{width:6px;height:6px;border-radius:99px}
+  .evmini{font-size:.62rem;line-height:1.25;white-space:nowrap;overflow:hidden;
+    text-overflow:ellipsis;border-radius:4px;padding:1px 3px;color:#fff}
+
+  /* vista settimana */
+  .wk{display:grid;gap:3px;padding:6px 8px 12px}
+  .wkrow{display:grid;grid-template-columns:54px 1fr;gap:8px;align-items:stretch;
+    background:#fafbfc;border-radius:9px;padding:7px 8px;min-height:48px;cursor:pointer}
+  .wkrow.today{background:var(--accent-soft)}
+  .wkd{text-align:center;font-size:.7rem;color:var(--muted);font-weight:700;text-transform:uppercase}
+  .wkd b{display:block;font-size:1.15rem;color:var(--ink)}
+  .wkrow.holi .wkd b{color:var(--danger)}
+  .wkev{display:flex;flex-direction:column;gap:3px;justify-content:center}
+  .pill{font-size:.76rem;padding:3px 8px;border-radius:7px;color:#fff;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .pill.grey{background:#eef1f5;color:var(--muted);font-weight:600}
+
+  /* vista anno */
+  .year{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:10px}
+  @media(max-width:560px){ .year{grid-template-columns:repeat(2,1fr)} }
+  .ym{background:#fafbfc;border-radius:10px;padding:7px;cursor:pointer}
+  .ym h4{margin:0 0 5px;font-size:.74rem;text-align:center;text-transform:capitalize;color:var(--muted)}
+  .ymg{display:grid;grid-template-columns:repeat(7,1fr);gap:1px}
+  .ymd{font-size:.54rem;text-align:center;padding:1px 0;border-radius:3px;color:var(--muted)}
+  .ymd.has{background:var(--accent);color:#fff;font-weight:700}
+  .ymd.today{outline:1px solid var(--accent)}
+  .ymd.holi{color:var(--danger);font-weight:700}
+
   nav{position:fixed;bottom:0;left:0;right:0;z-index:30;background:rgba(255,255,255,.96);
     backdrop-filter:blur(10px);border-top:1px solid var(--line);display:flex;
     padding-bottom:env(safe-area-inset-bottom)}
@@ -110,19 +168,17 @@
   nav button.on .ic{filter:none;opacity:1}
   .hint{font-size:.76rem;color:var(--muted);padding:10px 6px;line-height:1.5}
 
-  /* modale */
   .mod{position:fixed;inset:0;z-index:50;background:rgba(16,32,52,.45);
     display:none;align-items:flex-end;justify-content:center}
   .mod.on{display:flex}
-  .mod .sheet{background:var(--card);width:100%;max-width:520px;
-    border-radius:18px 18px 0 0;padding:18px 16px calc(18px + env(safe-area-inset-bottom));
-    max-height:88vh;overflow:auto}
-  @media(min-width:640px){
-    .mod{align-items:center}
-    .mod .sheet{border-radius:18px}
-  }
+  .mod .sheet{background:var(--card);width:100%;max-width:520px;border-radius:18px 18px 0 0;
+    padding:18px 16px calc(18px + env(safe-area-inset-bottom));max-height:88vh;overflow:auto}
+  @media(min-width:640px){ .mod{align-items:center} .mod .sheet{border-radius:18px} }
   .mod h3{margin:0 0 14px;font-size:1.05rem}
-  .mod .acts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px}
+  .acts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px}
+  .swatch{display:flex;gap:7px;flex-wrap:wrap}
+  .sw-c{width:30px;height:30px;border-radius:99px;cursor:pointer;border:3px solid transparent}
+  .sw-c.on{border-color:var(--ink)}
 </style>
 </head>
 <body>
@@ -143,64 +199,59 @@
 <div id="app" style="display:none">
 
 <header>
-  <div class="grow">
-    <h1>FamilyHub</h1>
-    <div class="sub" id="today"></div>
-  </div>
+  <div class="grow"><h1>FamilyHub</h1><div class="sub" id="today"></div></div>
   <span class="sync" id="sync">···</span>
 </header>
 
 <div id="bar"></div>
 
 <main>
-  <!-- ---------- HOME ---------- -->
+  <!-- ============ HOME ============ -->
   <section id="view-home" class="view active">
     <h2 class="section">Prossimi eventi</h2>
     <div class="card" id="home-events"></div>
-
     <h2 class="section">Attività in scadenza</h2>
     <div class="card" id="home-tasks"></div>
-    <div class="hint">Compaiono solo le attività con una scadenza entro 14 giorni.</div>
+    <div class="hint">Compaiono le attività con scadenza entro 14 giorni.</div>
   </section>
 
-  <!-- ---------- CALENDARIO ---------- -->
+  <!-- ============ CALENDARIO ============ -->
   <section id="view-cal" class="view">
-    <h2 class="section">Nuovo evento</h2>
     <div class="card">
-      <form class="form" id="form-event">
-        <input id="ev-title" placeholder="Titolo (es. Compleanno mamma)" required>
-        <div class="two">
-          <input id="ev-date" type="date" required>
-          <select id="ev-cat">
-            <option value="birthday">🎂 Compleanno</option>
-            <option value="trip">✈️ Viaggio</option>
-            <option value="home">🏠 Casa</option>
-            <option value="person">👤 Personale</option>
-          </select>
-        </div>
-        <input id="ev-note" placeholder="Note (facoltativo)">
-        <button class="primary" type="submit">Aggiungi evento</button>
-      </form>
+      <div class="segs">
+        <button class="seg on" data-vw="week">Settimana</button>
+        <button class="seg" data-vw="month">Mese</button>
+        <button class="seg" data-vw="year">Anno</button>
+      </div>
+      <div class="calbar">
+        <button class="navb" id="cal-prev">‹</button>
+        <div class="lbl" id="cal-label"></div>
+        <button class="navb" id="cal-next">›</button>
+        <button class="navb" id="cal-today" title="Oggi" style="width:auto;padding:0 10px">Oggi</button>
+      </div>
+      <div id="cal-body"></div>
     </div>
-    <h2 class="section">Tutti gli eventi</h2>
-    <div class="card" id="cal-list"></div>
+
+    <h2 class="section">
+      <span class="grow" id="day-label">Eventi del giorno</span>
+      <button class="linkbtn" id="btn-new-ev">＋ Evento</button>
+    </h2>
+    <div class="card" id="day-events"></div>
   </section>
 
-  <!-- ---------- LISTE ---------- -->
+  <!-- ============ LISTE ============ -->
   <section id="view-lists" class="view">
     <div class="tabs" id="list-tabs"></div>
 
     <div class="card">
       <form class="form" id="form-item">
         <input id="it-text" placeholder="Aggiungi…" required>
-
-        <div id="task-fields" style="display:none;display:grid;gap:10px">
+        <div id="task-fields" style="display:none;gap:10px">
           <label class="fld">Scadenza (facoltativa)</label>
           <input id="it-due" type="date">
           <label class="fld">Responsabili</label>
           <div class="owners" id="it-owners"></div>
         </div>
-
         <button class="primary" type="submit">Aggiungi</button>
       </form>
     </div>
@@ -209,21 +260,31 @@
       <span class="grow" id="list-title">Elementi</span>
       <button class="linkbtn" id="btn-edit-list">Modifica lista</button>
     </h2>
-    <div class="card" id="items-list"></div>
+
+    <div class="card">
+      <div class="filters" id="filters" style="display:none">
+        <select id="f-owner"></select>
+        <select id="f-due">
+          <option value="all">Tutte le scadenze</option>
+          <option value="late">Scadute</option>
+          <option value="today">Oggi</option>
+          <option value="week">Entro 7 giorni</option>
+          <option value="none">Senza scadenza</option>
+        </select>
+        <label class="sw full"><input type="checkbox" id="f-hide"> Nascondi completate</label>
+      </div>
+      <div id="items-list"></div>
+    </div>
     <div class="hint" id="list-hint"></div>
   </section>
 
-  <!-- ---------- IMPOSTAZIONI ---------- -->
+  <!-- ============ IMPOSTAZIONI ============ -->
   <section id="view-set" class="view">
     <h2 class="section">Account</h2>
     <div class="card">
-      <div class="row">
-        <span class="emoji">👤</span>
-        <div class="grow">
-          <div class="title" id="me-name">—</div>
-          <div class="meta" id="me-mail">—</div>
-        </div>
-      </div>
+      <div class="row"><span class="emoji">👤</span>
+        <div class="grow"><div class="title" id="me-name">—</div>
+        <div class="meta" id="me-mail">—</div></div></div>
     </div>
 
     <h2 class="section">Nome visualizzato</h2>
@@ -234,22 +295,24 @@
       </form>
     </div>
 
-    <h2 class="section">Diagnostica</h2>
+    <h2 class="section">
+      <span class="grow">Categorie evento</span>
+      <button class="linkbtn" id="btn-new-cat">＋ Nuova</button>
+    </h2>
+    <div class="card" id="cats-list"></div>
+    <div class="hint">Le categorie con “ricorre ogni anno” non chiedono l’anno: ideali per compleanni e anniversari.</div>
+
+    <h2 class="section">Festività</h2>
     <div class="card">
       <div class="form">
-        <button class="ghost" id="btn-test">Verifica permessi database</button>
-        <div class="hint" style="padding:0" id="test-out">
-          Controlla se l'app può leggere e modificare i dati.
-        </div>
+        <label class="sw"><input type="checkbox" id="opt-holi" checked> Mostra le festività italiane</label>
       </div>
     </div>
 
     <h2 class="section">Sessione</h2>
-    <div class="card">
-      <div class="form">
-        <button class="ghost" id="btn-out" style="color:var(--danger)">Esci</button>
-      </div>
-    </div>
+    <div class="card"><div class="form">
+      <button class="ghost" id="btn-out" style="color:var(--danger)">Esci</button>
+    </div></div>
   </section>
 </main>
 
@@ -261,435 +324,794 @@
 </nav>
 </div>
 
-<!-- ---------- MODALE LISTA ---------- -->
-<div class="mod" id="mod-list">
-  <div class="sheet">
-    <h3 id="mod-title">Nuova lista</h3>
-    <form class="form" style="padding:0" id="form-list">
-      <label class="fld">Nome</label>
-      <input id="ml-name" placeholder="Es. 🛒 Spesa" required>
-      <label class="fld">Tipo</label>
-      <select id="ml-kind">
-        <option value="shopping">🛒 Lista della spesa</option>
-        <option value="tasks">✅ Lista di attività</option>
+<!-- ---------- MODALE EVENTO ---------- -->
+<div class="mod" id="mod-ev"><div class="sheet">
+  <h3 id="mev-title">Nuovo evento</h3>
+  <form class="form" style="padding:0" id="form-ev">
+    <label class="fld">Titolo</label>
+    <input id="me-title" placeholder="Es. Compleanno mamma" required>
+
+    <label class="fld">Categoria</label>
+    <select id="me-cat"></select>
+
+    <div id="me-datewrap">
+      <label class="fld">Data</label>
+      <input id="me-date" type="date">
+    </div>
+
+    <div id="me-dmwrap" style="display:none">
+      <label class="fld">Giorno e mese</label>
+      <div class="two">
+        <select id="me-day"></select>
+        <select id="me-month"></select>
+      </div>
+    </div>
+
+    <label class="sw"><input type="checkbox" id="me-allday" checked> Giornata intera</label>
+
+    <div id="me-times" style="display:none">
+      <div class="two">
+        <div><label class="fld">Dalle</label><input id="me-from" type="time"></div>
+        <div><label class="fld">Alle</label><input id="me-to" type="time"></div>
+      </div>
+    </div>
+
+    <div id="me-endwrap">
+      <label class="fld">Fine (per eventi su più giorni)</label>
+      <input id="me-enddate" type="date">
+    </div>
+
+    <div id="me-recwrap">
+      <label class="fld">Ricorrenza</label>
+      <select id="me-rec">
+        <option value="none">Non si ripete</option>
+        <option value="daily">Ogni giorno</option>
+        <option value="weekly">Ogni settimana</option>
+        <option value="monthly">Ogni mese</option>
+        <option value="yearly">Ogni anno</option>
       </select>
-      <div class="hint" style="padding:0">
-        Le liste di attività permettono di assegnare responsabili e scadenze.
+      <div id="me-untilwrap" style="display:none;margin-top:10px">
+        <label class="fld">Ripeti fino al (facoltativo)</label>
+        <input id="me-until" type="date">
       </div>
-      <div class="acts">
-        <button type="button" class="ghost" id="ml-cancel">Annulla</button>
-        <button type="submit" class="primary">Salva</button>
-      </div>
-      <button type="button" class="ghost" id="ml-delete"
-              style="color:var(--danger);display:none">Elimina questa lista</button>
-    </form>
-  </div>
-</div>
+    </div>
+
+    <label class="fld">Luogo (facoltativo)</label>
+    <input id="me-loc" placeholder="Es. Santa Maria la Longa">
+
+    <label class="fld">Note (facoltativo)</label>
+    <input id="me-note">
+
+    <div class="acts">
+      <button type="button" class="ghost" id="me-cancel">Annulla</button>
+      <button type="submit" class="primary">Salva</button>
+    </div>
+    <button type="button" class="ghost" id="me-delete"
+            style="color:var(--danger);display:none">Elimina evento</button>
+  </form>
+</div></div>
+
+<!-- ---------- MODALE CATEGORIA ---------- -->
+<div class="mod" id="mod-cat"><div class="sheet">
+  <h3 id="mc-title">Nuova categoria</h3>
+  <form class="form" style="padding:0" id="form-cat">
+    <label class="fld">Nome</label>
+    <input id="mc-label" placeholder="Es. Anniversario" required>
+    <label class="fld">Emoji</label>
+    <input id="mc-emoji" placeholder="🎉" maxlength="4">
+    <label class="fld">Colore</label>
+    <div class="swatch" id="mc-colors"></div>
+    <label class="sw"><input type="checkbox" id="mc-yearly"> Ricorre ogni anno (non chiede l’anno)</label>
+    <div class="acts">
+      <button type="button" class="ghost" id="mc-cancel">Annulla</button>
+      <button type="submit" class="primary">Salva</button>
+    </div>
+    <button type="button" class="ghost" id="mc-delete"
+            style="color:var(--danger);display:none">Elimina categoria</button>
+  </form>
+</div></div>
+
+<!-- ---------- MODALE LISTA ---------- -->
+<div class="mod" id="mod-list"><div class="sheet">
+  <h3 id="mod-title">Nuova lista</h3>
+  <form class="form" style="padding:0" id="form-list">
+    <label class="fld">Nome</label>
+    <input id="ml-name" placeholder="Es. 🛒 Spesa" required>
+    <label class="fld">Tipo</label>
+    <select id="ml-kind">
+      <option value="shopping">🛒 Lista della spesa</option>
+      <option value="tasks">✅ Lista di attività</option>
+    </select>
+    <div class="acts">
+      <button type="button" class="ghost" id="ml-cancel">Annulla</button>
+      <button type="submit" class="primary">Salva</button>
+    </div>
+    <button type="button" class="ghost" id="ml-delete"
+            style="color:var(--danger);display:none">Elimina questa lista</button>
+  </form>
+</div></div>
 
 <!-- ---------- MODALE ATTIVITÀ ---------- -->
-<div class="mod" id="mod-item">
-  <div class="sheet">
-    <h3>Modifica attività</h3>
-    <form class="form" style="padding:0" id="form-edit-item">
-      <label class="fld">Descrizione</label>
-      <input id="mi-text" required>
-      <label class="fld">Scadenza</label>
-      <input id="mi-due" type="date">
-      <label class="fld">Responsabili</label>
-      <div class="owners" id="mi-owners"></div>
-      <div class="acts">
-        <button type="button" class="ghost" id="mi-cancel">Annulla</button>
-        <button type="submit" class="primary">Salva</button>
-      </div>
-    </form>
-  </div>
-</div>
+<div class="mod" id="mod-item"><div class="sheet">
+  <h3>Modifica attività</h3>
+  <form class="form" style="padding:0" id="form-edit-item">
+    <label class="fld">Descrizione</label>
+    <input id="mi-text" required>
+    <label class="fld">Scadenza</label>
+    <input id="mi-due" type="date">
+    <label class="fld">Responsabili</label>
+    <div class="owners" id="mi-owners"></div>
+    <div class="acts">
+      <button type="button" class="ghost" id="mi-cancel">Annulla</button>
+      <button type="submit" class="primary">Salva</button>
+    </div>
+  </form>
+</div></div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 const SUPABASE_URL  = 'https://bdftwbczimimjwzlhoyt.supabase.co';
 const SUPABASE_ANON = 'sb_publishable_IXipfmgVgXLugJdTXF2J9A_OyCFW-Io';
-
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
 
-const CATS = { birthday:{e:'🎂'}, trip:{e:'✈️'}, home:{e:'🏠'}, person:{e:'👤'} };
+let me=null, profiles={}, events=[], lists=[], items=[], cats=[];
+let activeList=null, editingList=null, editingItem=null, editingEv=null, editingCat=null;
+let newOwners=[], modOwners=[], catColor='#2b6cb0';
+let calView='week', cursor=new Date(), selDay=null;
+let showHoli = localStorage.getItem('fh-holi')!=='0';
 
-let me=null, profiles={}, events=[], lists=[], items=[], activeList=null;
-let editingList=null, editingItem=null;
-let newOwners=[];      // responsabili selezionati nel form di inserimento
-let modOwners=[];      // responsabili selezionati nella modale
-
-const $ = id => document.getElementById(id);
-const esc = s => String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const $  = id => document.getElementById(id);
+const esc= s => String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const nameOf = id => profiles[id] || '—';
 const curList = () => lists.find(l=>l.id===activeList) || null;
-const isTasks = l => l && l.kind === 'tasks';
+const isTasks = l => l && l.kind==='tasks';
+const catOf = k => cats.find(c=>c.key===k) || {emoji:'📌',color:'#6b7a8c',label:'Senza categoria',auto_yearly:false};
 
-function showErr(msg){
-  const b=$('bar'); b.className='on';
-  b.innerHTML='⚠️ '+esc(msg)+' — <span style="text-decoration:underline;cursor:pointer" id="bar-x">chiudi</span>';
-  $('bar-x').onclick=()=>b.className='';
-  console.error('FamilyHub:', msg);
-}
-const clearErr = () => $('bar').className='';
+const COLORS=['#2b6cb0','#2f855a','#c05621','#6b46c1','#b83280','#c53030','#2c7a7b','#805ad5','#d69e2e','#4a5568'];
+const MONTHS=['gennaio','febbraio','marzo','aprile','maggio','giugno','luglio','agosto','settembre','ottobre','novembre','dicembre'];
+const DOW=['lun','mar','mer','gio','ven','sab','dom'];
 
-function daysTo(iso){
-  const t=new Date(); t.setHours(0,0,0,0);
-  return Math.round((new Date(iso+'T00:00:00')-t)/86400000);
-}
-function humanDays(n){
-  if(n===0) return 'oggi';
-  if(n===1) return 'domani';
-  if(n<0) return n===-1?'ieri':`${-n} giorni fa`;
-  return `fra ${n} giorni`;
-}
-const fmtDate = iso => new Date(iso+'T00:00:00')
-  .toLocaleDateString('it-IT',{weekday:'short',day:'numeric',month:'long',year:'numeric'});
-const fmtShort = iso => new Date(iso+'T00:00:00')
-  .toLocaleDateString('it-IT',{day:'numeric',month:'short'});
+function showErr(m){ const b=$('bar'); b.className='on';
+  b.innerHTML='⚠️ '+esc(m)+' — <span style="text-decoration:underline;cursor:pointer" id="bar-x">chiudi</span>';
+  $('bar-x').onclick=()=>b.className=''; console.error('FamilyHub:',m); }
+const clearErr=()=>$('bar').className='';
 
-/* ---------- LOGIN ---------- */
-$('form-login').onsubmit = async e => {
-  e.preventDefault();
-  $('lg-err').textContent=''; $('lg-btn').disabled=true;
-  const { error } = await sb.auth.signInWithPassword({
-    email: $('lg-mail').value.trim(), password: $('lg-pass').value });
+/* ---------------- date ---------------- */
+const pad=n=>String(n).padStart(2,'0');
+const iso=d=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+const parse=s=>new Date(s+'T00:00:00');
+const todayISO=()=>iso(new Date());
+function daysTo(s){ const t=new Date(); t.setHours(0,0,0,0); return Math.round((parse(s)-t)/86400000); }
+function humanDays(n){ if(n===0)return'oggi'; if(n===1)return'domani';
+  if(n<0)return n===-1?'ieri':`${-n} giorni fa`; return `fra ${n} giorni`; }
+const fmtLong=s=>parse(s).toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+const fmtShort=s=>parse(s).toLocaleDateString('it-IT',{day:'numeric',month:'short'});
+const addDays=(d,n)=>{const x=new Date(d);x.setDate(x.getDate()+n);return x;};
+function mondayOf(d){ const x=new Date(d); const w=(x.getDay()+6)%7; x.setDate(x.getDate()-w); x.setHours(0,0,0,0); return x; }
+
+/* ---------------- festività italiane ---------------- */
+function easter(y){
+  const a=y%19,b=Math.floor(y/100),c=y%100,d=Math.floor(b/4),e=b%4,
+    f=Math.floor((b+8)/25),g=Math.floor((b-f+1)/3),h=(19*a+b-d-g+15)%30,
+    i=Math.floor(c/4),k=c%4,l=(32+2*e+2*i-h-k)%7,m=Math.floor((a+11*h+22*l)/451),
+    mo=Math.floor((h+l-7*m+114)/31),da=((h+l-7*m+114)%31)+1;
+  return new Date(y,mo-1,da);
+}
+const holiCache={};
+function holidays(y){
+  if(holiCache[y]) return holiCache[y];
+  const p=easter(y), pa=addDays(p,1);
+  const h={};
+  const put=(d,n)=>h[typeof d==='string'?d:iso(d)]=n;
+  put(`${y}-01-01`,'Capodanno');      put(`${y}-01-06`,'Epifania');
+  put(p,'Pasqua');                    put(pa,'Lunedì dell’Angelo');
+  put(`${y}-04-25`,'Festa della Liberazione');
+  put(`${y}-05-01`,'Festa del Lavoro');
+  put(`${y}-06-02`,'Festa della Repubblica');
+  put(`${y}-08-15`,'Ferragosto');     put(`${y}-11-01`,'Ognissanti');
+  put(`${y}-12-08`,'Immacolata');     put(`${y}-12-25`,'Natale');
+  put(`${y}-12-26`,'Santo Stefano');
+  holiCache[y]=h; return h;
+}
+const holiOn = s => showHoli ? (holidays(+s.slice(0,4))[s]||null) : null;
+
+/* ---------------- ricorrenze ---------------- */
+/* restituisce le occorrenze di un evento fra due date ISO */
+function occurrences(ev, fromISO, toISO){
+  const out=[], from=parse(fromISO), to=parse(toISO);
+  const base=parse(ev.event_date);
+  const until = ev.recurrence_until ? parse(ev.recurrence_until) : null;
+  const span = ev.end_date ? Math.max(0, Math.round((parse(ev.end_date)-base)/86400000)) : 0;
+
+  const push=d=>{
+    if(until && d>until) return;
+    for(let k=0;k<=span;k++){
+      const dd=addDays(d,k);
+      if(dd>=from && dd<=to) out.push({...ev, _date:iso(dd), _span:span});
+    }
+  };
+
+  if(ev.recurrence==='none'||!ev.recurrence){ push(base); return out; }
+
+  if(ev.recurrence==='yearly'){
+    for(let y=from.getFullYear()-1;y<=to.getFullYear()+1;y++){
+      const d=new Date(y, base.getMonth(), base.getDate());
+      if(d.getMonth()===base.getMonth()) push(d);
+    }
+    return out;
+  }
+  if(ev.recurrence==='monthly'){
+    let d=new Date(from.getFullYear(), from.getMonth()-1, 1);
+    for(let k=0;k<26;k++){
+      const x=new Date(d.getFullYear(), d.getMonth()+k, base.getDate());
+      if(x.getDate()===base.getDate() && x>=base) push(x);
+      if(x>to) break;
+    }
+    return out;
+  }
+  if(ev.recurrence==='weekly'){
+    let d=new Date(base);
+    while(d<from) d=addDays(d,7);
+    while(d<=to){ push(d); d=addDays(d,7); }
+    return out;
+  }
+  if(ev.recurrence==='daily'){
+    let d=new Date(Math.max(base,from));
+    d.setHours(0,0,0,0);
+    while(d<=to){ push(d); d=addDays(d,1); }
+    return out;
+  }
+  push(base); return out;
+}
+
+function eventsBetween(a,b){
+  const out=[];
+  events.forEach(ev=>out.push(...occurrences(ev,a,b)));
+  return out.sort((x,y)=> x._date.localeCompare(y._date) ||
+    String(x.start_time||'').localeCompare(String(y.start_time||'')));
+}
+const eventsOn = s => eventsBetween(s,s);
+
+/* ---------------- login ---------------- */
+$('form-login').onsubmit = async e=>{
+  e.preventDefault(); $('lg-err').textContent=''; $('lg-btn').disabled=true;
+  const {error}=await sb.auth.signInWithPassword({
+    email:$('lg-mail').value.trim(), password:$('lg-pass').value});
   $('lg-btn').disabled=false;
   if(error) $('lg-err').textContent='Email o password non corretti.';
 };
-$('btn-out').onclick = async () => { await sb.auth.signOut(); location.reload(); };
+$('btn-out').onclick=async()=>{ await sb.auth.signOut(); location.reload(); };
 sb.auth.onAuthStateChange((_e,s)=>{ if(s?.user){ me=s.user; start(); }});
 sb.auth.getSession().then(({data})=>{ if(data.session){ me=data.session.user; start(); }});
 
-/* ---------- AVVIO ---------- */
 async function start(){
-  $('login').style.display='none';
-  $('app').style.display='block';
+  $('login').style.display='none'; $('app').style.display='block';
   document.body.classList.add('app');
-  $('today').textContent=new Date()
-    .toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  $('today').textContent=new Date().toLocaleDateString('it-IT',
+    {weekday:'long',day:'numeric',month:'long',year:'numeric'});
   $('me-mail').textContent=me.email;
+  $('opt-holi').checked=showHoli;
+  selDay=todayISO();
+  buildDayMonthPickers();
   await loadAll();
   subscribe();
 }
 
 async function loadAll(){
   $('sync').textContent='sincronizzo…';
-  const [p,e,l,i] = await Promise.all([
+  const [p,e,l,i,c]=await Promise.all([
     sb.from('profiles').select('*'),
     sb.from('events').select('*').order('event_date'),
     sb.from('lists').select('*').order('position'),
-    sb.from('list_items').select('*').order('created_at')
+    sb.from('list_items').select('*').order('created_at'),
+    sb.from('event_categories').select('*').order('position')
   ]);
-  const bad=[p,e,l,i].find(r=>r.error);
+  const bad=[p,e,l,i,c].find(r=>r.error);
   if(bad) showErr('Lettura dati: '+bad.error.message);
   profiles={}; (p.data||[]).forEach(r=>profiles[r.id]=r.display_name);
-  events=e.data||[]; lists=l.data||[]; items=i.data||[];
-  if(lists.length && !lists.some(l=>l.id===activeList)) activeList=lists[0].id;
+  events=e.data||[]; lists=l.data||[]; items=i.data||[]; cats=c.data||[];
+  if(lists.length && !lists.some(x=>x.id===activeList)) activeList=lists[0].id;
   if(!lists.length) activeList=null;
   $('me-name').textContent=nameOf(me.id);
-  if(!$('set-name').value) $('set-name').value = nameOf(me.id)==='—' ? '' : nameOf(me.id);
+  if(!$('set-name').value) $('set-name').value=nameOf(me.id)==='—'?'':nameOf(me.id);
   $('sync').textContent='● in linea';
   renderAll();
 }
-
 function subscribe(){
-  sb.channel('familyhub')
-    .on('postgres_changes',{event:'*',schema:'public'},()=>loadAll())
-    .subscribe();
+  sb.channel('familyhub').on('postgres_changes',{event:'*',schema:'public'},()=>loadAll()).subscribe();
 }
 
-/* ---------- RENDER ---------- */
-function eventRow(ev,del){
-  const n=daysTo(ev.event_date);
-  const c=CATS[ev.category]||CATS.person;
+/* ---------------- render: home ---------------- */
+function evLine(o,del){
+  const c=catOf(o.category);
+  const n=daysTo(o._date);
+  const time = o.all_day===false && o.start_time
+    ? o.start_time.slice(0,5)+(o.end_time?'–'+o.end_time.slice(0,5):'') : 'tutto il giorno';
   return `<div class="row">
-    <span class="emoji">${c.e}</span>
-    <div class="grow"><div class="title">${esc(ev.title)}</div>
-    <div class="meta">${fmtDate(ev.event_date)}${ev.note?' · '+esc(ev.note):''}</div></div>
+    <span class="emoji">${c.emoji}</span>
+    <div class="grow"><div class="title">${esc(o.title)}</div>
+      <div class="meta">${fmtLong(o._date)} · ${time}${o.location?' · '+esc(o.location):''}</div>
+      ${o.note?`<div class="meta">${esc(o.note)}</div>`:''}
+    </div>
     <span class="badge ${n>=0&&n<=7?'soon':''}">${humanDays(n)}</span>
-    ${del?`<button class="iconbtn" data-del-ev="${ev.id}">✕</button>`:''}
+    ${del?`<button class="iconbtn neutral" data-ev-edit="${o.id}">✎</button>`:''}
   </div>`;
 }
 
-function ownerChips(ids){
-  return (ids||[]).map(id=>`<span class="chip">${esc(nameOf(id))}</span>`).join('');
-}
-function dueChip(iso){
-  if(!iso) return '';
-  const n=daysTo(iso);
-  const cls = n<0 ? 'late' : (n<=3 ? 'due' : '');
-  return `<span class="chip ${cls}">📅 ${fmtShort(iso)} · ${humanDays(n)}</span>`;
-}
-
 function renderHome(){
-  const up=events.filter(e=>daysTo(e.event_date)>=0).slice(0,5);
-  $('home-events').innerHTML = up.length
-    ? up.map(e=>eventRow(e,false)).join('')
+  const t=todayISO(), to=iso(addDays(new Date(),400));
+  const up=eventsBetween(t,to).slice(0,5);
+  $('home-events').innerHTML= up.length? up.map(o=>evLine(o,false)).join('')
     : `<div class="empty">Nessun evento in programma.</div>`;
 
-  // solo attività con scadenza entro 14 giorni (o scadute), non spuntate
-  const taskLists = lists.filter(isTasks).map(l=>l.id);
-  const due = items
-    .filter(i=>!i.done && i.due_date && taskLists.includes(i.list_id) && daysTo(i.due_date)<=14)
+  const tl=lists.filter(isTasks).map(l=>l.id);
+  const due=items.filter(i=>!i.done&&i.due_date&&tl.includes(i.list_id)&&daysTo(i.due_date)<=14)
     .sort((a,b)=>a.due_date.localeCompare(b.due_date));
-
-  $('home-tasks').innerHTML = due.length
-    ? due.map(i=>{
-        const l=lists.find(x=>x.id===i.list_id);
-        const n=daysTo(i.due_date);
-        return `<div class="row"><span class="emoji">☐</span>
-          <div class="grow"><div class="title">${esc(i.text)}</div>
-            <div class="meta">${esc(l?l.name:'')}</div>
-            <div class="chips">${ownerChips(i.owners)}</div>
-          </div>
-          <span class="badge ${n<0?'soon':(n<=3?'warn':'')}">${humanDays(n)}</span>
-        </div>`;}).join('')
+  $('home-tasks').innerHTML= due.length? due.map(i=>{
+      const l=lists.find(x=>x.id===i.list_id), n=daysTo(i.due_date);
+      return `<div class="row"><span class="emoji">☐</span>
+        <div class="grow"><div class="title">${esc(i.text)}</div>
+        <div class="meta">${esc(l?l.name:'')}</div>
+        <div class="chips">${(i.owners||[]).map(o=>`<span class="chip">${esc(nameOf(o))}</span>`).join('')}</div></div>
+        <span class="badge ${n<0?'soon':(n<=3?'warn':'')}">${humanDays(n)}</span></div>`;}).join('')
     : `<div class="empty">Nessuna attività in scadenza. 🎉</div>`;
 }
 
+/* ---------------- render: calendario ---------------- */
 function renderCal(){
-  $('cal-list').innerHTML = events.length
-    ? events.map(e=>eventRow(e,true)).join('')
-    : `<div class="empty">Nessun evento salvato.</div>`;
+  document.querySelectorAll('.seg').forEach(s=>s.classList.toggle('on',s.dataset.vw===calView));
+  const body=$('cal-body');
+  if(calView==='week')  return renderWeek(body);
+  if(calView==='month') return renderMonth(body);
+  renderYear(body);
 }
 
-function renderOwnerPicker(el, selected){
-  const ids = Object.keys(profiles);
-  el.innerHTML = ids.length
-    ? ids.map(id=>`<button type="button" class="own ${selected.includes(id)?'on':''}"
-        data-own="${id}">${esc(nameOf(id))}</button>`).join('')
+function renderWeek(el){
+  const mon=mondayOf(cursor), sun=addDays(mon,6);
+  $('cal-label').textContent = mon.getMonth()===sun.getMonth()
+    ? `${mon.getDate()}–${sun.getDate()} ${MONTHS[mon.getMonth()]} ${mon.getFullYear()}`
+    : `${mon.getDate()} ${MONTHS[mon.getMonth()].slice(0,3)} – ${sun.getDate()} ${MONTHS[sun.getMonth()].slice(0,3)} ${sun.getFullYear()}`;
+  let h='<div class="wk">';
+  for(let k=0;k<7;k++){
+    const d=addDays(mon,k), s=iso(d), hol=holiOn(s);
+    const evs=eventsOn(s);
+    h+=`<div class="wkrow ${s===todayISO()?'today':''} ${hol?'holi':''}" data-day="${s}">
+      <div class="wkd">${DOW[k]}<b>${d.getDate()}</b></div>
+      <div class="wkev">
+        ${hol?`<span class="pill grey">🇮🇹 ${esc(hol)}</span>`:''}
+        ${evs.slice(0,4).map(o=>{const c=catOf(o.category);
+          const tm=o.all_day===false&&o.start_time?o.start_time.slice(0,5)+' ':'';
+          return `<span class="pill" style="background:${c.color}">${c.emoji} ${tm}${esc(o.title)}</span>`;}).join('')}
+        ${evs.length>4?`<span class="pill grey">+${evs.length-4} altri</span>`:''}
+        ${!hol&&!evs.length?`<span class="pill grey" style="background:transparent;color:#b6bfcb">—</span>`:''}
+      </div></div>`;
+  }
+  el.innerHTML=h+'</div>';
+}
+
+function renderMonth(el){
+  const y=cursor.getFullYear(), m=cursor.getMonth();
+  $('cal-label').textContent=`${MONTHS[m]} ${y}`;
+  const first=new Date(y,m,1), start=mondayOf(first);
+  let h='<div class="dow">'+DOW.map(d=>`<div>${d}</div>`).join('')+'</div><div class="grid">';
+  for(let k=0;k<42;k++){
+    const d=addDays(start,k), s=iso(d), out=d.getMonth()!==m;
+    const hol=holiOn(s), evs=eventsOn(s);
+    h+=`<div class="day ${out?'out':''} ${s===todayISO()?'today':''} ${s===selDay?'sel':''} ${hol?'holi':''}" data-day="${s}">
+      <div class="dnum">${d.getDate()}</div>
+      ${evs.slice(0,2).map(o=>{const c=catOf(o.category);
+        return `<div class="evmini" style="background:${c.color}">${esc(o.title)}</div>`;}).join('')}
+      ${evs.length>2?`<div class="dots">${evs.slice(2,7).map(o=>
+        `<span class="dot" style="background:${catOf(o.category).color}"></span>`).join('')}</div>`:''}
+    </div>`;
+  }
+  el.innerHTML=h+'</div>';
+}
+
+function renderYear(el){
+  const y=cursor.getFullYear();
+  $('cal-label').textContent=y;
+  const from=`${y}-01-01`, to=`${y}-12-31`;
+  const busy={}; eventsBetween(from,to).forEach(o=>busy[o._date]=true);
+  let h='<div class="year">';
+  for(let m=0;m<12;m++){
+    h+=`<div class="ym" data-month="${m}"><h4>${MONTHS[m]}</h4><div class="ymg">`;
+    const first=new Date(y,m,1), off=(first.getDay()+6)%7;
+    const days=new Date(y,m+1,0).getDate();
+    for(let k=0;k<off;k++) h+='<div class="ymd"></div>';
+    for(let dd=1;dd<=days;dd++){
+      const s=`${y}-${pad(m+1)}-${pad(dd)}`;
+      h+=`<div class="ymd ${busy[s]?'has':''} ${holiOn(s)?'holi':''} ${s===todayISO()?'today':''}">${dd}</div>`;
+    }
+    h+='</div></div>';
+  }
+  el.innerHTML=h+'</div>';
+}
+
+function renderDay(){
+  if(!selDay) selDay=todayISO();
+  const hol=holiOn(selDay);
+  $('day-label').textContent=fmtLong(selDay);
+  const evs=eventsOn(selDay);
+  $('day-events').innerHTML=
+    (hol?`<div class="row"><span class="emoji">🇮🇹</span>
+      <div class="grow"><div class="title">${esc(hol)}</div>
+      <div class="meta">Festività nazionale</div></div></div>`:'')
+    + (evs.length? evs.map(o=>evLine(o,true)).join('')
+       : (hol?'':`<div class="empty">Nessun evento in questa data.</div>`));
+}
+
+/* ---------------- render: liste ---------------- */
+function renderOwnerPicker(el,sel){
+  const ids=Object.keys(profiles);
+  el.innerHTML= ids.length? ids.map(id=>`<button type="button" class="own ${sel.includes(id)?'on':''}"
+    data-own="${id}">${esc(nameOf(id))}</button>`).join('')
     : `<span class="hint" style="padding:0">Nessun profilo disponibile.</span>`;
 }
 
 function renderLists(){
-  $('list-tabs').innerHTML =
-    lists.map(l=>`<button class="tab ${l.id===activeList?'on':''}" data-list="${l.id}">
-        ${l.kind==='tasks'?'✅':'🛒'} ${esc(l.name)}</button>`).join('')
+  $('list-tabs').innerHTML = lists.map(l=>
+    `<button class="tab ${l.id===activeList?'on':''}" data-list="${l.id}">
+      ${l.kind==='tasks'?'✅':'🛒'} ${esc(l.name)}</button>`).join('')
     + `<button class="tab add" id="tab-add">＋ Nuova lista</button>`;
 
-  const cur=curList();
-  $('list-title').textContent = cur ? cur.name : 'Nessuna lista';
-  $('btn-edit-list').style.display = cur ? '' : 'none';
-  $('form-item').style.display = cur ? '' : 'none';
-
-  const tasks = isTasks(cur);
-  $('task-fields').style.display = tasks ? 'grid' : 'none';
-  $('it-text').placeholder = tasks ? 'Nuova attività…' : 'Aggiungi alla spesa…';
-  $('list-hint').textContent = tasks
-    ? 'Tocca una riga per completarla, oppure la matita per modificarla.'
+  const cur=curList(), tasks=isTasks(cur);
+  $('list-title').textContent=cur?cur.name:'Nessuna lista';
+  $('btn-edit-list').style.display=cur?'':'none';
+  $('form-item').style.display=cur?'':'none';
+  $('task-fields').style.display=tasks?'grid':'none';
+  $('filters').style.display=tasks?'grid':'none';
+  $('it-text').placeholder=tasks?'Nuova attività…':'Aggiungi alla spesa…';
+  $('list-hint').textContent=tasks
+    ? 'Tocca una riga per completarla, la matita per modificarla.'
     : 'Tocca una riga per spuntarla.';
-  if(tasks) renderOwnerPicker($('it-owners'), newOwners);
+  if(tasks) renderOwnerPicker($('it-owners'),newOwners);
+
+  const fo=$('f-owner'), keep=fo.value||'all';
+  fo.innerHTML=`<option value="all">Tutti i responsabili</option>`
+    + Object.keys(profiles).map(id=>`<option value="${id}">${esc(nameOf(id))}</option>`).join('')
+    + `<option value="none">Senza responsabile</option>`;
+  fo.value=keep;
 
   if(!cur){ $('items-list').innerHTML=`<div class="empty">Crea la tua prima lista con ＋ Nuova lista.</div>`; return; }
 
-  const its=items.filter(i=>i.list_id===activeList)
-    .sort((a,b)=>{
-      if((a.done?1:0)!==(b.done?1:0)) return (a.done?1:0)-(b.done?1:0);
-      if(tasks){
-        if(a.due_date&&b.due_date) return a.due_date.localeCompare(b.due_date);
-        if(a.due_date) return -1;
-        if(b.due_date) return 1;
-      }
-      return 0;
-    });
+  let its=items.filter(i=>i.list_id===activeList);
 
-  $('items-list').innerHTML = its.length
-    ? its.map(i=>`<div class="row ${i.done?'done':''}" id="row-${i.id}">
-        <button class="tap" data-toggle="${i.id}">
-          <span class="chk ${i.done?'on':''}">${i.done?'✓':''}</span>
-          <span class="grow">
-            <span class="title">${esc(i.text)}</span>
-            ${tasks && (i.due_date || (i.owners&&i.owners.length))
-              ? `<span class="chips">${dueChip(i.due_date)}${ownerChips(i.owners)}</span>` : ''}
-            <span class="meta" style="display:block">${i.done
-              ? 'completato da '+esc(nameOf(i.done_by))
-              : 'aggiunto da '+esc(nameOf(i.created_by))}</span>
-          </span>
-        </button>
-        ${tasks?`<button class="iconbtn neutral" data-edit-it="${i.id}">✎</button>`:''}
-        <button class="iconbtn" data-del-it="${i.id}">✕</button>
-      </div>`).join('')
-    : `<div class="empty">Lista vuota.</div>`;
+  if(tasks){
+    const fOwn=fo.value, fDue=$('f-due').value, hide=$('f-hide').checked;
+    if(hide) its=its.filter(i=>!i.done);
+    if(fOwn==='none') its=its.filter(i=>!i.owners||!i.owners.length);
+    else if(fOwn!=='all') its=its.filter(i=>(i.owners||[]).includes(fOwn));
+    if(fDue==='none') its=its.filter(i=>!i.due_date);
+    else if(fDue!=='all') its=its.filter(i=>{
+      if(!i.due_date) return false;
+      const n=daysTo(i.due_date);
+      if(fDue==='late')  return n<0;
+      if(fDue==='today') return n===0;
+      if(fDue==='week')  return n>=0&&n<=7;
+      return true;
+    });
+  }
+
+  its.sort((a,b)=>{
+    if((a.done?1:0)!==(b.done?1:0)) return (a.done?1:0)-(b.done?1:0);
+    if(tasks){
+      if(a.due_date&&b.due_date) return a.due_date.localeCompare(b.due_date);
+      if(a.due_date) return -1; if(b.due_date) return 1;
+    }
+    return 0;
+  });
+
+  $('items-list').innerHTML= its.length? its.map(i=>{
+    const n=i.due_date?daysTo(i.due_date):null;
+    const due=i.due_date?`<span class="chip ${n<0?'late':(n<=3?'due':'')}">📅 ${fmtShort(i.due_date)} · ${humanDays(n)}</span>`:'';
+    const ow=(i.owners||[]).map(o=>`<span class="chip">${esc(nameOf(o))}</span>`).join('');
+    return `<div class="row ${i.done?'done':''}" id="row-${i.id}">
+      <button class="tap" data-toggle="${i.id}">
+        <span class="chk ${i.done?'on':''}">${i.done?'✓':''}</span>
+        <span class="grow"><span class="title">${esc(i.text)}</span>
+          ${tasks&&(due||ow)?`<span class="chips">${due}${ow}</span>`:''}
+          <span class="meta" style="display:block">${i.done
+            ?'completato da '+esc(nameOf(i.done_by)):'aggiunto da '+esc(nameOf(i.created_by))}</span>
+        </span></button>
+      ${tasks?`<button class="iconbtn neutral" data-edit-it="${i.id}">✎</button>`:''}
+      <button class="iconbtn" data-del-it="${i.id}">✕</button></div>`;}).join('')
+    : `<div class="empty">Nessun elemento${tasks?' con questi filtri':''}.</div>`;
 }
 
-function renderAll(){ renderHome(); renderCal(); renderLists(); }
+/* ---------------- render: categorie ---------------- */
+function renderCats(){
+  $('cats-list').innerHTML= cats.length? cats.map(c=>`
+    <div class="row"><span class="emoji">${c.emoji}</span>
+      <div class="grow"><div class="title">${esc(c.label)}</div>
+        <div class="meta">${c.auto_yearly?'ricorre ogni anno':'evento singolo'}</div></div>
+      <span class="dot" style="width:14px;height:14px;background:${c.color}"></span>
+      <button class="iconbtn neutral" data-cat-edit="${c.id}">✎</button>
+    </div>`).join('') : `<div class="empty">Nessuna categoria.</div>`;
+}
 
-/* ---------- INSERIMENTO ---------- */
-$('form-event').onsubmit = async e => {
-  e.preventDefault();
-  const { error } = await sb.from('events').insert({
-    title:$('ev-title').value.trim(), event_date:$('ev-date').value,
-    category:$('ev-cat').value, note:$('ev-note').value.trim()||null });
-  if(error) return showErr('Salvataggio evento: '+error.message);
-  clearErr(); e.target.reset(); loadAll();
-};
+function renderAll(){ renderHome(); renderCal(); renderDay(); renderLists(); renderCats(); }
 
-$('form-item').onsubmit = async e => {
+/* ---------------- calendario: interazioni ---------------- */
+document.querySelectorAll('.seg').forEach(s=>s.onclick=()=>{ calView=s.dataset.vw; renderCal(); });
+$('cal-prev').onclick=()=>{ shift(-1); };
+$('cal-next').onclick=()=>{ shift(1); };
+$('cal-today').onclick=()=>{ cursor=new Date(); selDay=todayISO(); renderCal(); renderDay(); };
+function shift(k){
+  if(calView==='week')  cursor=addDays(cursor,7*k);
+  else if(calView==='month') cursor=new Date(cursor.getFullYear(),cursor.getMonth()+k,1);
+  else cursor=new Date(cursor.getFullYear()+k,cursor.getMonth(),1);
+  renderCal();
+}
+
+/* ---------------- modale evento ---------------- */
+function buildDayMonthPickers(){
+  $('me-day').innerHTML=Array.from({length:31},(_,k)=>`<option value="${k+1}">${k+1}</option>`).join('');
+  $('me-month').innerHTML=MONTHS.map((m,k)=>`<option value="${k}">${m}</option>`).join('');
+}
+function fillCatSelect(){
+  $('me-cat').innerHTML=cats.map(c=>`<option value="${c.key}">${c.emoji} ${esc(c.label)}</option>`).join('');
+}
+function syncEvForm(){
+  const c=catOf($('me-cat').value);
+  const yearly=!!c.auto_yearly;
+  $('me-datewrap').style.display=yearly?'none':'';
+  $('me-dmwrap').style.display=yearly?'':'none';
+  $('me-recwrap').style.display=yearly?'none':'';
+  $('me-endwrap').style.display=yearly?'none':'';
+  const allday=$('me-allday').checked;
+  $('me-times').style.display=allday?'none':'';
+  $('me-untilwrap').style.display=$('me-rec').value!=='none'?'':'none';
+}
+$('me-cat').onchange=syncEvForm;
+$('me-allday').onchange=syncEvForm;
+$('me-rec').onchange=syncEvForm;
+
+function openEv(ev){
+  editingEv=ev||null;
+  fillCatSelect();
+  $('mev-title').textContent=ev?'Modifica evento':'Nuovo evento';
+  $('me-delete').style.display=ev?'block':'none';
+  const d=ev?parse(ev.event_date):parse(selDay||todayISO());
+  $('me-title').value=ev?ev.title:'';
+  $('me-cat').value=ev?ev.category:(cats[0]?cats[0].key:'person');
+  $('me-date').value=iso(d);
+  $('me-day').value=d.getDate(); $('me-month').value=d.getMonth();
+  $('me-allday').checked=ev?ev.all_day!==false:true;
+  $('me-from').value=ev&&ev.start_time?ev.start_time.slice(0,5):'';
+  $('me-to').value=ev&&ev.end_time?ev.end_time.slice(0,5):'';
+  $('me-enddate').value=ev&&ev.end_date?ev.end_date:'';
+  $('me-rec').value=ev?(ev.recurrence||'none'):'none';
+  $('me-until').value=ev&&ev.recurrence_until?ev.recurrence_until:'';
+  $('me-loc').value=ev&&ev.location?ev.location:'';
+  $('me-note').value=ev&&ev.note?ev.note:'';
+  syncEvForm();
+  $('mod-ev').classList.add('on');
+}
+const closeEv=()=>$('mod-ev').classList.remove('on');
+$('me-cancel').onclick=closeEv;
+$('mod-ev').onclick=e=>{ if(e.target.id==='mod-ev') closeEv(); };
+$('btn-new-ev').onclick=()=>openEv(null);
+
+$('form-ev').onsubmit=async e=>{
   e.preventDefault();
-  if(!activeList) return;
-  const tasks = isTasks(curList());
-  const rec = { list_id:activeList, text:$('it-text').value.trim() };
-  if(tasks){
-    rec.due_date = $('it-due').value || null;
-    rec.owners = newOwners;
+  const c=catOf($('me-cat').value), yearly=!!c.auto_yearly;
+  const rec={
+    title:$('me-title').value.trim(),
+    category:$('me-cat').value,
+    note:$('me-note').value.trim()||null,
+    location:$('me-loc').value.trim()||null,
+    all_day:$('me-allday').checked,
+    start_time:$('me-allday').checked?null:($('me-from').value||null),
+    end_time:$('me-allday').checked?null:($('me-to').value||null)
+  };
+  if(yearly){
+    const y=new Date().getFullYear();
+    rec.event_date=`${y}-${pad(+$('me-month').value+1)}-${pad(+$('me-day').value)}`;
+    rec.recurrence='yearly'; rec.recurrence_until=null; rec.end_date=null;
+  }else{
+    rec.event_date=$('me-date').value;
+    rec.end_date=$('me-enddate').value||null;
+    rec.recurrence=$('me-rec').value;
+    rec.recurrence_until=($('me-rec').value!=='none'&&$('me-until').value)?$('me-until').value:null;
   }
-  const { error } = await sb.from('list_items').insert(rec);
-  if(error) return showErr('Salvataggio elemento: '+error.message);
-  clearErr();
-  $('it-text').value=''; $('it-due').value=''; newOwners=[];
-  loadAll();
+  if(!rec.event_date) return showErr('Indica una data.');
+  const r = editingEv
+    ? await sb.from('events').update(rec).eq('id',editingEv.id)
+    : await sb.from('events').insert(rec);
+  if(r.error) return showErr('Salvataggio evento: '+r.error.message);
+  clearErr(); closeEv(); loadAll();
 };
 
-$('form-name').onsubmit = async e => {
+$('me-delete').onclick=async()=>{
+  if(!editingEv) return;
+  if(!confirm(`Eliminare "${editingEv.title}"?`)) return;
+  const {error}=await sb.from('events').delete().eq('id',editingEv.id);
+  if(error) return showErr('Eliminazione: '+error.message);
+  clearErr(); closeEv(); loadAll();
+};
+
+/* ---------------- modale categoria ---------------- */
+function paintColors(sel){
+  catColor=sel;
+  $('mc-colors').innerHTML=COLORS.map(c=>
+    `<div class="sw-c ${c===sel?'on':''}" data-color="${c}" style="background:${c}"></div>`).join('');
+}
+function openCat(c){
+  editingCat=c||null;
+  $('mc-title').textContent=c?'Modifica categoria':'Nuova categoria';
+  $('mc-label').value=c?c.label:'';
+  $('mc-emoji').value=c?c.emoji:'📌';
+  $('mc-yearly').checked=c?!!c.auto_yearly:false;
+  $('mc-delete').style.display=c?'block':'none';
+  paintColors(c?c.color:COLORS[0]);
+  $('mod-cat').classList.add('on');
+}
+const closeCat=()=>$('mod-cat').classList.remove('on');
+$('mc-cancel').onclick=closeCat;
+$('mod-cat').onclick=e=>{ if(e.target.id==='mod-cat') closeCat(); };
+$('btn-new-cat').onclick=()=>openCat(null);
+
+$('form-cat').onsubmit=async e=>{
+  e.preventDefault();
+  const label=$('mc-label').value.trim();
+  const rec={ label, emoji:$('mc-emoji').value.trim()||'📌',
+    color:catColor, auto_yearly:$('mc-yearly').checked };
+  let r;
+  if(editingCat){
+    r=await sb.from('event_categories').update(rec).eq('id',editingCat.id);
+  }else{
+    rec.key = label.toLowerCase().normalize('NFD').replace(/[^a-z0-9]/g,'').slice(0,20)
+              + '_' + Math.random().toString(36).slice(2,6);
+    rec.position = cats.length? Math.max(...cats.map(c=>c.position||0))+1 : 1;
+    r=await sb.from('event_categories').insert(rec);
+  }
+  if(r.error) return showErr('Salvataggio categoria: '+r.error.message);
+  clearErr(); closeCat(); loadAll();
+};
+
+$('mc-delete').onclick=async()=>{
+  if(!editingCat) return;
+  const n=events.filter(e=>e.category===editingCat.key).length;
+  if(n) return showErr(`Non posso eliminare "${editingCat.label}": è usata da ${n} eventi. Spostali prima in un'altra categoria.`);
+  if(!confirm(`Eliminare la categoria "${editingCat.label}"?`)) return;
+  const {error}=await sb.from('event_categories').delete().eq('id',editingCat.id);
+  if(error) return showErr('Eliminazione categoria: '+error.message);
+  clearErr(); closeCat(); loadAll();
+};
+
+/* ---------------- liste: modali ---------------- */
+function openList(l){
+  editingList=l;
+  $('mod-title').textContent=l?'Modifica lista':'Nuova lista';
+  $('ml-name').value=l?l.name:''; $('ml-kind').value=l?(l.kind||'shopping'):'shopping';
+  $('ml-delete').style.display=l?'block':'none';
+  $('mod-list').classList.add('on');
+}
+const closeList=()=>$('mod-list').classList.remove('on');
+$('ml-cancel').onclick=closeList;
+$('mod-list').onclick=e=>{ if(e.target.id==='mod-list') closeList(); };
+$('btn-edit-list').onclick=()=>{ const c=curList(); if(c) openList(c); };
+
+$('form-list').onsubmit=async e=>{
+  e.preventDefault();
+  const rec={name:$('ml-name').value.trim(),kind:$('ml-kind').value};
+  let error;
+  if(editingList){ ({error}=await sb.from('lists').update(rec).eq('id',editingList.id)); }
+  else{
+    rec.position=lists.length?Math.max(...lists.map(l=>l.position||0))+1:1;
+    const r=await sb.from('lists').insert(rec).select(); error=r.error;
+    if(!error&&r.data&&r.data.length) activeList=r.data[0].id;
+  }
+  if(error) return showErr('Salvataggio lista: '+error.message);
+  clearErr(); closeList(); loadAll();
+};
+$('ml-delete').onclick=async()=>{
+  if(!editingList) return;
+  const n=items.filter(i=>i.list_id===editingList.id).length;
+  if(!confirm(n?`Eliminare "${editingList.name}" e i suoi ${n} elementi?`
+                :`Eliminare la lista "${editingList.name}"?`)) return;
+  const {error}=await sb.from('lists').delete().eq('id',editingList.id);
+  if(error) return showErr('Eliminazione lista: '+error.message);
+  clearErr(); closeList(); activeList=null; loadAll();
+};
+
+function openItem(it){
+  editingItem=it; modOwners=[...(it.owners||[])];
+  $('mi-text').value=it.text; $('mi-due').value=it.due_date||'';
+  renderOwnerPicker($('mi-owners'),modOwners);
+  $('mod-item').classList.add('on');
+}
+const closeItem=()=>$('mod-item').classList.remove('on');
+$('mi-cancel').onclick=closeItem;
+$('mod-item').onclick=e=>{ if(e.target.id==='mod-item') closeItem(); };
+$('form-edit-item').onsubmit=async e=>{
+  e.preventDefault();
+  const {error}=await sb.from('list_items').update({
+    text:$('mi-text').value.trim(), due_date:$('mi-due').value||null, owners:modOwners
+  }).eq('id',editingItem.id);
+  if(error) return showErr('Salvataggio attività: '+error.message);
+  clearErr(); closeItem(); loadAll();
+};
+
+/* ---------------- inserimenti ---------------- */
+$('form-item').onsubmit=async e=>{
+  e.preventDefault(); if(!activeList) return;
+  const rec={list_id:activeList,text:$('it-text').value.trim()};
+  if(isTasks(curList())){ rec.due_date=$('it-due').value||null; rec.owners=newOwners; }
+  const {error}=await sb.from('list_items').insert(rec);
+  if(error) return showErr('Salvataggio elemento: '+error.message);
+  clearErr(); $('it-text').value=''; $('it-due').value=''; newOwners=[]; loadAll();
+};
+
+$('form-name').onsubmit=async e=>{
   e.preventDefault();
   const name=$('set-name').value.trim();
-  let { error } = await sb.from('profiles').update({display_name:name}).eq('id',me.id);
+  let {error}=await sb.from('profiles').update({display_name:name}).eq('id',me.id);
   if(error){ const r=await sb.from('profiles').insert({id:me.id,display_name:name}); error=r.error; }
   if(error) return showErr('Salvataggio nome: '+error.message);
   clearErr(); loadAll();
 };
 
-/* ---------- SPUNTA ---------- */
+/* ---------------- spunta ---------------- */
 async function toggleItem(id){
-  const it=items.find(i=>i.id===id);
-  if(!it){ loadAll(); return; }
+  const it=items.find(i=>i.id===id); if(!it){ loadAll(); return; }
   const row=$('row-'+id); if(row) row.classList.add('busy');
   const next=!it.done;
-  const { data, error } = await sb.from('list_items')
-    .update({ done:next, done_by: next?me.id:null }).eq('id',id).select();
+  const {data,error}=await sb.from('list_items')
+    .update({done:next,done_by:next?me.id:null}).eq('id',id).select();
   if(row) row.classList.remove('busy');
   if(error) return showErr('Spunta non salvata: '+error.message);
   if(!data||!data.length) return showErr('Modifica rifiutata dal database (permessi RLS).');
-  clearErr(); it.done=next; it.done_by=next?me.id:null;
-  renderAll(); loadAll();
+  clearErr(); it.done=next; it.done_by=next?me.id:null; renderAll(); loadAll();
 }
 
-/* ---------- MODALE LISTA ---------- */
-function openList(list){
-  editingList = list;
-  $('mod-title').textContent = list ? 'Modifica lista' : 'Nuova lista';
-  $('ml-name').value = list ? list.name : '';
-  $('ml-kind').value = list ? (list.kind||'shopping') : 'shopping';
-  $('ml-delete').style.display = list ? 'block' : 'none';
-  $('mod-list').classList.add('on');
-  setTimeout(()=>$('ml-name').focus(),50);
-}
-const closeList = () => $('mod-list').classList.remove('on');
-$('ml-cancel').onclick = closeList;
-$('mod-list').onclick = e => { if(e.target.id==='mod-list') closeList(); };
-
-$('form-list').onsubmit = async e => {
-  e.preventDefault();
-  const rec = { name:$('ml-name').value.trim(), kind:$('ml-kind').value };
-  let error;
-  if(editingList){
-    ({ error } = await sb.from('lists').update(rec).eq('id',editingList.id));
-  }else{
-    rec.position = lists.length ? Math.max(...lists.map(l=>l.position||0))+1 : 1;
-    const r = await sb.from('lists').insert(rec).select();
-    error = r.error;
-    if(!error && r.data && r.data.length) activeList = r.data[0].id;
-  }
-  if(error) return showErr('Salvataggio lista: '+error.message);
-  clearErr(); closeList(); loadAll();
+/* ---------------- filtri ---------------- */
+['f-owner','f-due'].forEach(id=>$(id).onchange=renderLists);
+$('f-hide').onchange=renderLists;
+$('opt-holi').onchange=e=>{
+  showHoli=e.target.checked;
+  localStorage.setItem('fh-holi',showHoli?'1':'0');
+  renderCal(); renderDay();
 };
 
-$('ml-delete').onclick = async () => {
-  if(!editingList) return;
-  const n = items.filter(i=>i.list_id===editingList.id).length;
-  const msg = n
-    ? `Eliminare "${editingList.name}" e i suoi ${n} elementi?`
-    : `Eliminare la lista "${editingList.name}"?`;
-  if(!confirm(msg)) return;
-  const { error } = await sb.from('lists').delete().eq('id',editingList.id);
-  if(error) return showErr('Eliminazione lista: '+error.message);
-  clearErr(); closeList(); activeList=null; loadAll();
-};
+/* ---------------- click globali ---------------- */
+document.addEventListener('click',async e=>{
+  const sw=e.target.closest('[data-color]');
+  if(sw){ paintColors(sw.dataset.color); return; }
 
-/* ---------- MODALE ATTIVITÀ ---------- */
-function openItem(it){
-  editingItem = it;
-  modOwners = [...(it.owners||[])];
-  $('mi-text').value = it.text;
-  $('mi-due').value = it.due_date || '';
-  renderOwnerPicker($('mi-owners'), modOwners);
-  $('mod-item').classList.add('on');
-}
-const closeItem = () => $('mod-item').classList.remove('on');
-$('mi-cancel').onclick = closeItem;
-$('mod-item').onclick = e => { if(e.target.id==='mod-item') closeItem(); };
+  const o=e.target.closest('[data-own]');
+  if(o){ const id=o.dataset.own, inMod=!!o.closest('#mi-owners');
+    const arr=inMod?modOwners:newOwners; const k=arr.indexOf(id);
+    k>=0?arr.splice(k,1):arr.push(id); o.classList.toggle('on'); return; }
 
-$('form-edit-item').onsubmit = async e => {
-  e.preventDefault();
-  const { error } = await sb.from('list_items').update({
-    text: $('mi-text').value.trim(),
-    due_date: $('mi-due').value || null,
-    owners: modOwners
-  }).eq('id', editingItem.id);
-  if(error) return showErr('Salvataggio attività: '+error.message);
-  clearErr(); closeItem(); loadAll();
-};
+  const dy=e.target.closest('[data-day]');
+  if(dy){ selDay=dy.dataset.day; renderCal(); renderDay(); return; }
 
-/* ---------- CLICK GLOBALI ---------- */
-document.addEventListener('click', async e => {
-  const o = e.target.closest('[data-own]');
-  if(o){
-    const id=o.dataset.own;
-    const inMod = !!o.closest('#mi-owners');
-    const arr = inMod ? modOwners : newOwners;
-    const k = arr.indexOf(id);
-    k>=0 ? arr.splice(k,1) : arr.push(id);
-    o.classList.toggle('on');
-    return;
-  }
+  const ym=e.target.closest('[data-month]');
+  if(ym){ cursor=new Date(cursor.getFullYear(),+ym.dataset.month,1); calView='month'; renderCal(); return; }
 
   if(e.target.id==='tab-add'){ openList(null); return; }
 
-  const t = e.target.closest('[data-toggle],[data-del-it],[data-edit-it],[data-del-ev],[data-list]');
+  const t=e.target.closest('[data-toggle],[data-del-it],[data-edit-it],[data-list],[data-ev-edit],[data-cat-edit]');
   if(!t) return;
-
   if(t.dataset.list){ activeList=t.dataset.list; newOwners=[]; renderLists(); return; }
-  if(t.dataset.delEv){
-    const {error}=await sb.from('events').delete().eq('id',t.dataset.delEv);
-    if(error) return showErr('Eliminazione: '+error.message);
-    loadAll(); return;
-  }
-  if(t.dataset.editIt){
-    const it=items.find(i=>i.id===t.dataset.editIt);
-    if(it) openItem(it);
-    return;
-  }
+  if(t.dataset.evEdit){ const ev=events.find(x=>x.id===t.dataset.evEdit); if(ev) openEv(ev); return; }
+  if(t.dataset.catEdit){ const c=cats.find(x=>x.id===t.dataset.catEdit); if(c) openCat(c); return; }
+  if(t.dataset.editIt){ const it=items.find(i=>i.id===t.dataset.editIt); if(it) openItem(it); return; }
   if(t.dataset.delIt){
     const {error}=await sb.from('list_items').delete().eq('id',t.dataset.delIt);
     if(error) return showErr('Eliminazione: '+error.message);
-    loadAll(); return;
-  }
+    loadAll(); return; }
   if(t.dataset.toggle){ toggleItem(t.dataset.toggle); }
 });
 
-$('btn-edit-list').onclick = () => { const c=curList(); if(c) openList(c); };
-
-/* ---------- DIAGNOSTICA ---------- */
-$('btn-test').onclick = async () => {
-  const out=$('test-out'); out.textContent='Verifica in corso…';
-  const lines=[];
-  const r1=await sb.from('list_items').select('id,due_date,owners').limit(1);
-  lines.push(r1.error ? '❌ lettura list_items: '+r1.error.message : '✅ lettura list_items');
-  const r2=await sb.from('lists').select('id,kind').limit(1);
-  lines.push(r2.error ? '❌ colonna lists.kind mancante: esegui la migrazione' : '✅ colonne nuove presenti');
-  lines.push('👤 utente: '+(me?me.email:'non autenticato'));
-  out.innerHTML=lines.join('<br>');
-};
-
-/* ---------- NAV ---------- */
+/* ---------------- nav ---------------- */
 document.querySelectorAll('nav button').forEach(b=>{
   b.onclick=()=>{
     document.querySelectorAll('nav button').forEach(x=>x.classList.remove('on'));
     document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
-    b.classList.add('on');
-    $('view-'+b.dataset.go).classList.add('active');
-    window.scrollTo(0,0);
+    b.classList.add('on'); $('view-'+b.dataset.go).classList.add('active'); window.scrollTo(0,0);
   };
 });
 </script>
