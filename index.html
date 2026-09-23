@@ -365,11 +365,20 @@
       <label class="fld">Ricorrenza</label>
       <select id="me-rec">
         <option value="none">Non si ripete</option>
-        <option value="daily">Ogni giorno</option>
-        <option value="weekly">Ogni settimana</option>
-        <option value="monthly">Ogni mese</option>
-        <option value="yearly">Ogni anno</option>
+        <option value="i1">Ogni giorno</option>
+        <option value="i7">Ogni settimana (7 giorni)</option>
+        <option value="i14">Ogni 2 settimane (14 giorni)</option>
+        <option value="i30">Ogni mese (30 giorni)</option>
+        <option value="i90">Ogni 3 mesi (90 giorni)</option>
+        <option value="yearly">Ogni anno (stessa data)</option>
+        <option value="ix">Ogni… giorni</option>
       </select>
+
+      <div id="me-nwrap" style="display:none;margin-top:10px">
+        <label class="fld">Ogni quanti giorni</label>
+        <input id="me-every" type="number" min="1" max="999" placeholder="Es. 45">
+      </div>
+
       <div id="me-untilwrap" style="display:none;margin-top:10px">
         <label class="fld">Ripeti fino al (facoltativo)</label>
         <input id="me-until" type="date">
@@ -540,27 +549,20 @@ function occurrences(ev, fromISO, toISO){
     }
     return out;
   }
-  if(ev.recurrence==='monthly'){
-    let d=new Date(from.getFullYear(), from.getMonth()-1, 1);
-    for(let k=0;k<26;k++){
-      const x=new Date(d.getFullYear(), d.getMonth()+k, base.getDate());
-      if(x.getDate()===base.getDate() && x>=base) push(x);
-      if(x>to) break;
-    }
+  /* ricorrenza a intervallo fisso di giorni */
+  const stepMap={interval:ev.interval_days, daily:1, weekly:7, monthly:30};
+  const step = stepMap[ev.recurrence];
+  if(step && step>0){
+    /* prima occorrenza utile >= from, calcolata senza ciclare a vuoto */
+    const gap = Math.round((from-base)/86400000);
+    const jumps = gap>0 ? Math.floor(gap/step) : 0;
+    let d = addDays(base, jumps*step);
+    while(d < addDays(from,-span)) d = addDays(d, step);
+    let guard=0;
+    while(d<=to && guard++<2000){ push(d); d=addDays(d,step); }
     return out;
   }
-  if(ev.recurrence==='weekly'){
-    let d=new Date(base);
-    while(d<from) d=addDays(d,7);
-    while(d<=to){ push(d); d=addDays(d,7); }
-    return out;
-  }
-  if(ev.recurrence==='daily'){
-    let d=new Date(Math.max(base,from));
-    d.setHours(0,0,0,0);
-    while(d<=to){ push(d); d=addDays(d,1); }
-    return out;
-  }
+
   push(base); return out;
 }
 
@@ -622,6 +624,18 @@ function subscribe(){
 }
 
 /* ---------------- render: home ---------------- */
+function recLabel(o){
+  if(o.recurrence==='yearly') return ' · 🔁 ogni anno';
+  if(o.recurrence==='interval'&&o.interval_days){
+    const n=o.interval_days;
+    if(n===1)  return ' · 🔁 ogni giorno';
+    if(n===7)  return ' · 🔁 ogni settimana';
+    if(n===30) return ' · 🔁 ogni 30 giorni';
+    return ` · 🔁 ogni ${n} giorni`;
+  }
+  return '';
+}
+
 function evLine(o,del){
   const c=catOf(o.category);
   const n=daysTo(o._date);
@@ -630,7 +644,7 @@ function evLine(o,del){
   return `<div class="row">
     <span class="emoji">${c.emoji}</span>
     <div class="grow"><div class="title">${esc(o.title)}</div>
-      <div class="meta">${fmtLong(o._date)} · ${time}${o.location?' · '+esc(o.location):''}</div>
+      <div class="meta">${fmtLong(o._date)} · ${time}${o.location?' · '+esc(o.location):''}${recLabel(o)}</div>
       ${o.note?`<div class="meta">${esc(o.note)}</div>`:''}
     </div>
     <span class="badge ${n>=0&&n<=7?'soon':''}">${humanDays(n)}</span>
@@ -849,8 +863,10 @@ function buildDayMonthPickers(){
   $('me-day').innerHTML=Array.from({length:31},(_,k)=>`<option value="${k+1}">${k+1}</option>`).join('');
   $('me-month').innerHTML=MONTHS.map((m,k)=>`<option value="${k}">${m}</option>`).join('');
 }
-function fillCatSelect(){
-  $('me-cat').innerHTML=cats.map(c=>`<option value="${c.key}">${c.emoji} ${esc(c.label)}</option>`).join('');
+function fillCatSelect(sel){
+  $('me-cat').innerHTML=cats.map(c=>`<option value="${c.key}">${c.emoji} ${esc(c.label)}</option>`).join('')
+    + `<option value="__new">＋ Nuova categoria…</option>`;
+  if(sel) $('me-cat').value=sel;
 }
 function syncEvForm(){
   const c=catOf($('me-cat').value);
@@ -861,9 +877,21 @@ function syncEvForm(){
   $('me-endwrap').style.display=yearly?'none':'';
   const allday=$('me-allday').checked;
   $('me-times').style.display=allday?'none':'';
-  $('me-untilwrap').style.display=$('me-rec').value!=='none'?'':'none';
+  const rv=$('me-rec').value;
+  $('me-untilwrap').style.display=rv!=='none'?'':'none';
+  $('me-nwrap').style.display=rv==='ix'?'':'none';
 }
-$('me-cat').onchange=syncEvForm;
+let lastCatKey=null, catFromEvent=false;
+$('me-cat').onchange=()=>{
+  if($('me-cat').value==='__new'){
+    $('me-cat').value = lastCatKey || (cats[0]?cats[0].key:'');
+    catFromEvent = true;
+    openCat(null);
+    return;
+  }
+  lastCatKey=$('me-cat').value;
+  syncEvForm();
+};
 $('me-allday').onchange=syncEvForm;
 $('me-rec').onchange=syncEvForm;
 
@@ -875,13 +903,25 @@ function openEv(ev){
   const d=ev?parse(ev.event_date):parse(selDay||todayISO());
   $('me-title').value=ev?ev.title:'';
   $('me-cat').value=ev?ev.category:(cats[0]?cats[0].key:'person');
+  lastCatKey=$('me-cat').value;
   $('me-date').value=iso(d);
   $('me-day').value=d.getDate(); $('me-month').value=d.getMonth();
   $('me-allday').checked=ev?ev.all_day!==false:true;
   $('me-from').value=ev&&ev.start_time?ev.start_time.slice(0,5):'';
   $('me-to').value=ev&&ev.end_time?ev.end_time.slice(0,5):'';
   $('me-enddate').value=ev&&ev.end_date?ev.end_date:'';
-  $('me-rec').value=ev?(ev.recurrence||'none'):'none';
+  /* ricorrenza -> valore del menu */
+  let rv='none', every='';
+  if(ev){
+    if(ev.recurrence==='yearly') rv='yearly';
+    else if(ev.recurrence==='interval'){
+      const n=ev.interval_days||30;
+      rv=[1,7,14,30,90].includes(n) ? 'i'+n : 'ix';
+      every=n;
+    }
+  }
+  $('me-rec').value=rv;
+  $('me-every').value=every;
   $('me-until').value=ev&&ev.recurrence_until?ev.recurrence_until:'';
   $('me-loc').value=ev&&ev.location?ev.location:'';
   $('me-note').value=ev&&ev.note?ev.note:'';
@@ -908,12 +948,22 @@ $('form-ev').onsubmit=async e=>{
   if(yearly){
     const y=new Date().getFullYear();
     rec.event_date=`${y}-${pad(+$('me-month').value+1)}-${pad(+$('me-day').value)}`;
-    rec.recurrence='yearly'; rec.recurrence_until=null; rec.end_date=null;
+    rec.recurrence='yearly'; rec.interval_days=null;
+    rec.recurrence_until=null; rec.end_date=null;
   }else{
     rec.event_date=$('me-date').value;
     rec.end_date=$('me-enddate').value||null;
-    rec.recurrence=$('me-rec').value;
-    rec.recurrence_until=($('me-rec').value!=='none'&&$('me-until').value)?$('me-until').value:null;
+    const rv=$('me-rec').value;
+    if(rv==='none'){ rec.recurrence='none'; rec.interval_days=null; }
+    else if(rv==='yearly'){ rec.recurrence='yearly'; rec.interval_days=null; }
+    else if(rv==='ix'){
+      const n=parseInt($('me-every').value,10);
+      if(!n||n<1) return showErr('Indica ogni quanti giorni si ripete l’evento.');
+      rec.recurrence='interval'; rec.interval_days=n;
+    }else{
+      rec.recurrence='interval'; rec.interval_days=parseInt(rv.slice(1),10);
+    }
+    rec.recurrence_until=(rv!=='none'&&$('me-until').value)?$('me-until').value:null;
   }
   if(!rec.event_date) return showErr('Indica una data.');
   const r = editingEv
@@ -947,7 +997,7 @@ function openCat(c){
   paintColors(c?c.color:COLORS[0]);
   $('mod-cat').classList.add('on');
 }
-const closeCat=()=>$('mod-cat').classList.remove('on');
+const closeCat=()=>{ catFromEvent=false; $('mod-cat').classList.remove('on'); };
 $('mc-cancel').onclick=closeCat;
 $('mod-cat').onclick=e=>{ if(e.target.id==='mod-cat') closeCat(); };
 $('btn-new-cat').onclick=()=>openCat(null);
@@ -964,10 +1014,24 @@ $('form-cat').onsubmit=async e=>{
     rec.key = label.toLowerCase().normalize('NFD').replace(/[^a-z0-9]/g,'').slice(0,20)
               + '_' + Math.random().toString(36).slice(2,6);
     rec.position = cats.length? Math.max(...cats.map(c=>c.position||0))+1 : 1;
-    r=await sb.from('event_categories').insert(rec);
+    r=await sb.from('event_categories').insert(rec).select();
   }
   if(r.error) return showErr('Salvataggio categoria: '+r.error.message);
-  clearErr(); closeCat(); loadAll();
+  clearErr(); closeCat();
+
+  /* se stavo creando la categoria dalla schermata evento,
+     la seleziono subito nel modulo rimasto aperto sotto */
+  const created = (!editingCat && r.data && r.data.length) ? r.data[0] : null;
+  if(created){ cats.push(created); }
+  if(catFromEvent && created){
+    catFromEvent=false;
+    fillCatSelect(created.key);
+    lastCatKey=created.key;
+    syncEvForm();
+  }else{
+    catFromEvent=false;
+  }
+  loadAll();
 };
 
 $('mc-delete').onclick=async()=>{
