@@ -9,6 +9,7 @@
   :root{
     --bg:#f2f4f7; --card:#fff; --ink:#16212e; --muted:#6b7a8c;
     --line:#e2e7ee; --accent:#2b6cb0; --accent-soft:#e8f0fa; --danger:#c0392b;
+    --warn:#b7791f; --warn-soft:#fdf3e0;
     --radius:14px; --shadow:0 1px 3px rgba(16,32,52,.08),0 6px 18px rgba(16,32,52,.06);
   }
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -33,7 +34,6 @@
   header .sub{font-size:.78rem;opacity:.85;margin-top:2px}
   .sync{font-size:.7rem;background:rgba(255,255,255,.18);padding:4px 9px;border-radius:99px}
 
-  /* banda errore */
   #bar{display:none;background:#fdecea;color:var(--danger);font-size:.8rem;
     padding:10px 14px;border-bottom:1px solid #f5c6c0;line-height:1.45}
   #bar.on{display:block}
@@ -41,8 +41,12 @@
   main{padding:16px 14px 8px;max-width:760px;margin:0 auto}
   .view{display:none} .view.active{display:block}
   h2.section{font-size:.74rem;text-transform:uppercase;letter-spacing:.9px;
-    color:var(--muted);margin:20px 4px 8px;font-weight:700}
+    color:var(--muted);margin:20px 4px 8px;font-weight:700;
+    display:flex;align-items:center;gap:8px}
+  h2.section .grow{flex:1}
   h2.section:first-child{margin-top:4px}
+  .linkbtn{border:none;background:none;color:var(--accent);font:inherit;font-size:.74rem;
+    font-weight:700;text-transform:uppercase;letter-spacing:.6px;cursor:pointer;padding:2px 4px}
   .card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
   .row{display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid var(--line)}
   .row:last-child{border-bottom:none}
@@ -53,17 +57,23 @@
   .badge{font-size:.72rem;font-weight:700;padding:4px 9px;border-radius:99px;
     background:var(--accent-soft);color:var(--accent);white-space:nowrap;flex:none}
   .badge.soon{background:#fdecea;color:var(--danger)}
+  .badge.warn{background:var(--warn-soft);color:var(--warn)}
+  .chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:5px}
+  .chip{font-size:.7rem;background:var(--accent-soft);color:var(--accent);
+    padding:2px 8px;border-radius:99px;font-weight:600}
+  .chip.due{background:var(--warn-soft);color:var(--warn)}
+  .chip.late{background:#fdecea;color:var(--danger)}
   .empty{padding:22px 16px;text-align:center;color:var(--muted);font-size:.88rem}
   .iconbtn{border:none;background:none;color:var(--muted);font-size:1.05rem;
     cursor:pointer;padding:6px;border-radius:8px;flex:none}
   .iconbtn:hover{background:var(--bg);color:var(--danger)}
+  .iconbtn.neutral:hover{color:var(--accent)}
 
-  /* area tappabile ampia per la spunta */
-  .tap{display:flex;align-items:center;gap:12px;flex:1;min-width:0;
+  .tap{display:flex;align-items:flex-start;gap:12px;flex:1;min-width:0;
        cursor:pointer;padding:2px 0;background:none;border:none;font:inherit;text-align:left}
   .chk{width:24px;height:24px;border:2px solid #c3ccd8;border-radius:7px;display:flex;
     align-items:center;justify-content:center;flex:none;font-size:.85rem;
-    color:#fff;transition:.15s;pointer-events:none}
+    color:#fff;transition:.15s;pointer-events:none;margin-top:1px}
   .chk.on{background:var(--accent);border-color:var(--accent)}
   .row.busy{opacity:.45}
   .done .title{text-decoration:line-through;color:var(--muted)}
@@ -73,15 +83,23 @@
     border-radius:10px;background:#fbfcfd;color:inherit}
   input:focus,select:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
   .two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  label.fld{font-size:.74rem;color:var(--muted);font-weight:600;margin-bottom:-4px}
   button.primary{font:inherit;font-weight:600;border:none;cursor:pointer;background:var(--accent);
     color:#fff;padding:12px;border-radius:10px}
   button.primary:disabled{opacity:.6}
   button.ghost{font:inherit;border:1px solid var(--line);background:var(--card);
     color:var(--muted);padding:11px;border-radius:10px;cursor:pointer}
+  .owners{display:flex;flex-wrap:wrap;gap:8px}
+  .own{border:1px solid var(--line);background:#fbfcfd;color:var(--muted);
+    padding:8px 13px;border-radius:99px;font-size:.85rem;cursor:pointer}
+  .own.on{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600}
+
   .tabs{display:flex;gap:8px;overflow-x:auto;padding:0 4px 4px;margin-bottom:10px}
   .tab{border:1px solid var(--line);background:var(--card);color:var(--muted);
     padding:7px 14px;border-radius:99px;font-size:.85rem;cursor:pointer;white-space:nowrap}
   .tab.on{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600}
+  .tab.add{color:var(--accent);font-weight:700}
+
   nav{position:fixed;bottom:0;left:0;right:0;z-index:30;background:rgba(255,255,255,.96);
     backdrop-filter:blur(10px);border-top:1px solid var(--line);display:flex;
     padding-bottom:env(safe-area-inset-bottom)}
@@ -91,7 +109,20 @@
   nav button.on{color:var(--accent);font-weight:700}
   nav button.on .ic{filter:none;opacity:1}
   .hint{font-size:.76rem;color:var(--muted);padding:10px 6px;line-height:1.5}
-  code{background:var(--bg);padding:1px 5px;border-radius:5px;font-size:.92em}
+
+  /* modale */
+  .mod{position:fixed;inset:0;z-index:50;background:rgba(16,32,52,.45);
+    display:none;align-items:flex-end;justify-content:center}
+  .mod.on{display:flex}
+  .mod .sheet{background:var(--card);width:100%;max-width:520px;
+    border-radius:18px 18px 0 0;padding:18px 16px calc(18px + env(safe-area-inset-bottom));
+    max-height:88vh;overflow:auto}
+  @media(min-width:640px){
+    .mod{align-items:center}
+    .mod .sheet{border-radius:18px}
+  }
+  .mod h3{margin:0 0 14px;font-size:1.05rem}
+  .mod .acts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px}
 </style>
 </head>
 <body>
@@ -122,13 +153,17 @@
 <div id="bar"></div>
 
 <main>
+  <!-- ---------- HOME ---------- -->
   <section id="view-home" class="view active">
     <h2 class="section">Prossimi eventi</h2>
     <div class="card" id="home-events"></div>
-    <h2 class="section">Da fare</h2>
-    <div class="card" id="home-todo"></div>
+
+    <h2 class="section">Attività in scadenza</h2>
+    <div class="card" id="home-tasks"></div>
+    <div class="hint">Compaiono solo le attività con una scadenza entro 14 giorni.</div>
   </section>
 
+  <!-- ---------- CALENDARIO ---------- -->
   <section id="view-cal" class="view">
     <h2 class="section">Nuovo evento</h2>
     <div class="card">
@@ -151,19 +186,34 @@
     <div class="card" id="cal-list"></div>
   </section>
 
+  <!-- ---------- LISTE ---------- -->
   <section id="view-lists" class="view">
     <div class="tabs" id="list-tabs"></div>
+
     <div class="card">
       <form class="form" id="form-item">
-        <input id="it-text" placeholder="Aggiungi elemento…" required>
+        <input id="it-text" placeholder="Aggiungi…" required>
+
+        <div id="task-fields" style="display:none;display:grid;gap:10px">
+          <label class="fld">Scadenza (facoltativa)</label>
+          <input id="it-due" type="date">
+          <label class="fld">Responsabili</label>
+          <div class="owners" id="it-owners"></div>
+        </div>
+
         <button class="primary" type="submit">Aggiungi</button>
       </form>
     </div>
-    <h2 class="section" id="list-title">Elementi</h2>
+
+    <h2 class="section">
+      <span class="grow" id="list-title">Elementi</span>
+      <button class="linkbtn" id="btn-edit-list">Modifica lista</button>
+    </h2>
     <div class="card" id="items-list"></div>
-    <div class="hint">Tocca la riga per spuntarla. Le modifiche compaiono anche sull'altro telefono.</div>
+    <div class="hint" id="list-hint"></div>
   </section>
 
+  <!-- ---------- IMPOSTAZIONI ---------- -->
   <section id="view-set" class="view">
     <h2 class="section">Account</h2>
     <div class="card">
@@ -175,6 +225,7 @@
         </div>
       </div>
     </div>
+
     <h2 class="section">Nome visualizzato</h2>
     <div class="card">
       <form class="form" id="form-name">
@@ -182,6 +233,7 @@
         <button class="primary" type="submit">Salva nome</button>
       </form>
     </div>
+
     <h2 class="section">Diagnostica</h2>
     <div class="card">
       <div class="form">
@@ -191,6 +243,7 @@
         </div>
       </div>
     </div>
+
     <h2 class="section">Sessione</h2>
     <div class="card">
       <div class="form">
@@ -208,24 +261,69 @@
 </nav>
 </div>
 
+<!-- ---------- MODALE LISTA ---------- -->
+<div class="mod" id="mod-list">
+  <div class="sheet">
+    <h3 id="mod-title">Nuova lista</h3>
+    <form class="form" style="padding:0" id="form-list">
+      <label class="fld">Nome</label>
+      <input id="ml-name" placeholder="Es. 🛒 Spesa" required>
+      <label class="fld">Tipo</label>
+      <select id="ml-kind">
+        <option value="shopping">🛒 Lista della spesa</option>
+        <option value="tasks">✅ Lista di attività</option>
+      </select>
+      <div class="hint" style="padding:0">
+        Le liste di attività permettono di assegnare responsabili e scadenze.
+      </div>
+      <div class="acts">
+        <button type="button" class="ghost" id="ml-cancel">Annulla</button>
+        <button type="submit" class="primary">Salva</button>
+      </div>
+      <button type="button" class="ghost" id="ml-delete"
+              style="color:var(--danger);display:none">Elimina questa lista</button>
+    </form>
+  </div>
+</div>
+
+<!-- ---------- MODALE ATTIVITÀ ---------- -->
+<div class="mod" id="mod-item">
+  <div class="sheet">
+    <h3>Modifica attività</h3>
+    <form class="form" style="padding:0" id="form-edit-item">
+      <label class="fld">Descrizione</label>
+      <input id="mi-text" required>
+      <label class="fld">Scadenza</label>
+      <input id="mi-due" type="date">
+      <label class="fld">Responsabili</label>
+      <div class="owners" id="mi-owners"></div>
+      <div class="acts">
+        <button type="button" class="ghost" id="mi-cancel">Annulla</button>
+        <button type="submit" class="primary">Salva</button>
+      </div>
+    </form>
+  </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-/* ==========================================================
-   ⚠️  INSERISCI QUI LE TUE DUE CHIAVI DI SUPABASE
-   ========================================================== */
 const SUPABASE_URL  = 'https://bdftwbczimimjwzlhoyt.supabase.co';
 const SUPABASE_ANON = 'sb_publishable_IXipfmgVgXLugJdTXF2J9A_OyCFW-Io';
-/* ========================================================== */
 
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
 
 const CATS = { birthday:{e:'🎂'}, trip:{e:'✈️'}, home:{e:'🏠'}, person:{e:'👤'} };
 
 let me=null, profiles={}, events=[], lists=[], items=[], activeList=null;
+let editingList=null, editingItem=null;
+let newOwners=[];      // responsabili selezionati nel form di inserimento
+let modOwners=[];      // responsabili selezionati nella modale
 
 const $ = id => document.getElementById(id);
 const esc = s => String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const nameOf = id => profiles[id] || '—';
+const curList = () => lists.find(l=>l.id===activeList) || null;
+const isTasks = l => l && l.kind === 'tasks';
 
 function showErr(msg){
   const b=$('bar'); b.className='on';
@@ -233,7 +331,7 @@ function showErr(msg){
   $('bar-x').onclick=()=>b.className='';
   console.error('FamilyHub:', msg);
 }
-function clearErr(){ $('bar').className=''; }
+const clearErr = () => $('bar').className='';
 
 function daysTo(iso){
   const t=new Date(); t.setHours(0,0,0,0);
@@ -247,6 +345,8 @@ function humanDays(n){
 }
 const fmtDate = iso => new Date(iso+'T00:00:00')
   .toLocaleDateString('it-IT',{weekday:'short',day:'numeric',month:'long',year:'numeric'});
+const fmtShort = iso => new Date(iso+'T00:00:00')
+  .toLocaleDateString('it-IT',{day:'numeric',month:'short'});
 
 /* ---------- LOGIN ---------- */
 $('form-login').onsubmit = async e => {
@@ -255,10 +355,9 @@ $('form-login').onsubmit = async e => {
   const { error } = await sb.auth.signInWithPassword({
     email: $('lg-mail').value.trim(), password: $('lg-pass').value });
   $('lg-btn').disabled=false;
-  if(error) $('lg-err').textContent = 'Email o password non corretti.';
+  if(error) $('lg-err').textContent='Email o password non corretti.';
 };
 $('btn-out').onclick = async () => { await sb.auth.signOut(); location.reload(); };
-
 sb.auth.onAuthStateChange((_e,s)=>{ if(s?.user){ me=s.user; start(); }});
 sb.auth.getSession().then(({data})=>{ if(data.session){ me=data.session.user; start(); }});
 
@@ -282,13 +381,14 @@ async function loadAll(){
     sb.from('lists').select('*').order('position'),
     sb.from('list_items').select('*').order('created_at')
   ]);
-  const bad = [p,e,l,i].find(r=>r.error);
-  if(bad){ showErr('Lettura dati: '+bad.error.message); }
+  const bad=[p,e,l,i].find(r=>r.error);
+  if(bad) showErr('Lettura dati: '+bad.error.message);
   profiles={}; (p.data||[]).forEach(r=>profiles[r.id]=r.display_name);
   events=e.data||[]; lists=l.data||[]; items=i.data||[];
-  if(!activeList && lists.length) activeList=lists[0].id;
+  if(lists.length && !lists.some(l=>l.id===activeList)) activeList=lists[0].id;
+  if(!lists.length) activeList=null;
   $('me-name').textContent=nameOf(me.id);
-  if(!$('set-name').value) $('set-name').value=nameOf(me.id)==='—'?'':nameOf(me.id);
+  if(!$('set-name').value) $('set-name').value = nameOf(me.id)==='—' ? '' : nameOf(me.id);
   $('sync').textContent='● in linea';
   renderAll();
 }
@@ -312,108 +412,253 @@ function eventRow(ev,del){
   </div>`;
 }
 
-function renderAll(){
+function ownerChips(ids){
+  return (ids||[]).map(id=>`<span class="chip">${esc(nameOf(id))}</span>`).join('');
+}
+function dueChip(iso){
+  if(!iso) return '';
+  const n=daysTo(iso);
+  const cls = n<0 ? 'late' : (n<=3 ? 'due' : '');
+  return `<span class="chip ${cls}">📅 ${fmtShort(iso)} · ${humanDays(n)}</span>`;
+}
+
+function renderHome(){
   const up=events.filter(e=>daysTo(e.event_date)>=0).slice(0,5);
   $('home-events').innerHTML = up.length
     ? up.map(e=>eventRow(e,false)).join('')
     : `<div class="empty">Nessun evento in programma.</div>`;
 
-  const open=items.filter(i=>!i.done);
-  $('home-todo').innerHTML = open.length
-    ? open.slice(0,8).map(i=>{
+  // solo attività con scadenza entro 14 giorni (o scadute), non spuntate
+  const taskLists = lists.filter(isTasks).map(l=>l.id);
+  const due = items
+    .filter(i=>!i.done && i.due_date && taskLists.includes(i.list_id) && daysTo(i.due_date)<=14)
+    .sort((a,b)=>a.due_date.localeCompare(b.due_date));
+
+  $('home-tasks').innerHTML = due.length
+    ? due.map(i=>{
         const l=lists.find(x=>x.id===i.list_id);
+        const n=daysTo(i.due_date);
         return `<div class="row"><span class="emoji">☐</span>
           <div class="grow"><div class="title">${esc(i.text)}</div>
-          <div class="meta">${esc(l?l.name:'')}</div></div></div>`;}).join('')
-    : `<div class="empty">Tutto spuntato. 🎉</div>`;
+            <div class="meta">${esc(l?l.name:'')}</div>
+            <div class="chips">${ownerChips(i.owners)}</div>
+          </div>
+          <span class="badge ${n<0?'soon':(n<=3?'warn':'')}">${humanDays(n)}</span>
+        </div>`;}).join('')
+    : `<div class="empty">Nessuna attività in scadenza. 🎉</div>`;
+}
 
+function renderCal(){
   $('cal-list').innerHTML = events.length
     ? events.map(e=>eventRow(e,true)).join('')
     : `<div class="empty">Nessun evento salvato.</div>`;
+}
 
-  $('list-tabs').innerHTML = lists.map(l=>
-    `<button class="tab ${l.id===activeList?'on':''}" data-list="${l.id}">${esc(l.name)}</button>`).join('');
-  const cur=lists.find(l=>l.id===activeList);
-  $('list-title').textContent = cur?cur.name:'Elementi';
+function renderOwnerPicker(el, selected){
+  const ids = Object.keys(profiles);
+  el.innerHTML = ids.length
+    ? ids.map(id=>`<button type="button" class="own ${selected.includes(id)?'on':''}"
+        data-own="${id}">${esc(nameOf(id))}</button>`).join('')
+    : `<span class="hint" style="padding:0">Nessun profilo disponibile.</span>`;
+}
 
-  const its=items.filter(i=>i.list_id===activeList).sort((a,b)=>(a.done?1:0)-(b.done?1:0));
+function renderLists(){
+  $('list-tabs').innerHTML =
+    lists.map(l=>`<button class="tab ${l.id===activeList?'on':''}" data-list="${l.id}">
+        ${l.kind==='tasks'?'✅':'🛒'} ${esc(l.name)}</button>`).join('')
+    + `<button class="tab add" id="tab-add">＋ Nuova lista</button>`;
+
+  const cur=curList();
+  $('list-title').textContent = cur ? cur.name : 'Nessuna lista';
+  $('btn-edit-list').style.display = cur ? '' : 'none';
+  $('form-item').style.display = cur ? '' : 'none';
+
+  const tasks = isTasks(cur);
+  $('task-fields').style.display = tasks ? 'grid' : 'none';
+  $('it-text').placeholder = tasks ? 'Nuova attività…' : 'Aggiungi alla spesa…';
+  $('list-hint').textContent = tasks
+    ? 'Tocca una riga per completarla, oppure la matita per modificarla.'
+    : 'Tocca una riga per spuntarla.';
+  if(tasks) renderOwnerPicker($('it-owners'), newOwners);
+
+  if(!cur){ $('items-list').innerHTML=`<div class="empty">Crea la tua prima lista con ＋ Nuova lista.</div>`; return; }
+
+  const its=items.filter(i=>i.list_id===activeList)
+    .sort((a,b)=>{
+      if((a.done?1:0)!==(b.done?1:0)) return (a.done?1:0)-(b.done?1:0);
+      if(tasks){
+        if(a.due_date&&b.due_date) return a.due_date.localeCompare(b.due_date);
+        if(a.due_date) return -1;
+        if(b.due_date) return 1;
+      }
+      return 0;
+    });
+
   $('items-list').innerHTML = its.length
     ? its.map(i=>`<div class="row ${i.done?'done':''}" id="row-${i.id}">
         <button class="tap" data-toggle="${i.id}">
           <span class="chk ${i.done?'on':''}">${i.done?'✓':''}</span>
-          <span class="grow"><span class="title">${esc(i.text)}</span>
-          <span class="meta" style="display:block">${i.done?'spuntato da '+esc(nameOf(i.done_by)):'aggiunto da '+esc(nameOf(i.created_by))}</span></span>
+          <span class="grow">
+            <span class="title">${esc(i.text)}</span>
+            ${tasks && (i.due_date || (i.owners&&i.owners.length))
+              ? `<span class="chips">${dueChip(i.due_date)}${ownerChips(i.owners)}</span>` : ''}
+            <span class="meta" style="display:block">${i.done
+              ? 'completato da '+esc(nameOf(i.done_by))
+              : 'aggiunto da '+esc(nameOf(i.created_by))}</span>
+          </span>
         </button>
-        <button class="iconbtn" data-del-it="${i.id}">✕</button></div>`).join('')
+        ${tasks?`<button class="iconbtn neutral" data-edit-it="${i.id}">✎</button>`:''}
+        <button class="iconbtn" data-del-it="${i.id}">✕</button>
+      </div>`).join('')
     : `<div class="empty">Lista vuota.</div>`;
 }
 
-/* ---------- AZIONI ---------- */
+function renderAll(){ renderHome(); renderCal(); renderLists(); }
+
+/* ---------- INSERIMENTO ---------- */
 $('form-event').onsubmit = async e => {
   e.preventDefault();
   const { error } = await sb.from('events').insert({
-    title: $('ev-title').value.trim(),
-    event_date: $('ev-date').value,
-    category: $('ev-cat').value,
-    note: $('ev-note').value.trim()||null });
+    title:$('ev-title').value.trim(), event_date:$('ev-date').value,
+    category:$('ev-cat').value, note:$('ev-note').value.trim()||null });
   if(error) return showErr('Salvataggio evento: '+error.message);
   clearErr(); e.target.reset(); loadAll();
 };
 
 $('form-item').onsubmit = async e => {
   e.preventDefault();
-  const { error } = await sb.from('list_items')
-    .insert({ list_id: activeList, text: $('it-text').value.trim() });
+  if(!activeList) return;
+  const tasks = isTasks(curList());
+  const rec = { list_id:activeList, text:$('it-text').value.trim() };
+  if(tasks){
+    rec.due_date = $('it-due').value || null;
+    rec.owners = newOwners;
+  }
+  const { error } = await sb.from('list_items').insert(rec);
   if(error) return showErr('Salvataggio elemento: '+error.message);
-  clearErr(); e.target.reset(); loadAll();
+  clearErr();
+  $('it-text').value=''; $('it-due').value=''; newOwners=[];
+  loadAll();
 };
 
 $('form-name').onsubmit = async e => {
   e.preventDefault();
   const name=$('set-name').value.trim();
   let { error } = await sb.from('profiles').update({display_name:name}).eq('id',me.id);
-  if(error){
-    const r = await sb.from('profiles').insert({id:me.id, display_name:name});
-    error = r.error;
-  }
+  if(error){ const r=await sb.from('profiles').insert({id:me.id,display_name:name}); error=r.error; }
   if(error) return showErr('Salvataggio nome: '+error.message);
   clearErr(); loadAll();
 };
 
-/* toggle spunta */
+/* ---------- SPUNTA ---------- */
 async function toggleItem(id){
-  const it = items.find(i=>i.id===id);
-  if(!it) return showErr('Elemento non trovato, ricarico.'), loadAll();
-
+  const it=items.find(i=>i.id===id);
+  if(!it){ loadAll(); return; }
   const row=$('row-'+id); if(row) row.classList.add('busy');
-  const next = !it.done;
-
+  const next=!it.done;
   const { data, error } = await sb.from('list_items')
-    .update({ done: next, done_by: next ? me.id : null })
-    .eq('id', id)
-    .select();
-
+    .update({ done:next, done_by: next?me.id:null }).eq('id',id).select();
   if(row) row.classList.remove('busy');
-
   if(error) return showErr('Spunta non salvata: '+error.message);
-  if(!data || data.length===0)
-    return showErr('Spunta rifiutata dal database: manca il permesso di modifica (RLS) su list_items.');
-
-  clearErr();
-  it.done = next;
-  it.done_by = next ? me.id : null;
-  renderAll();
-  loadAll();
+  if(!data||!data.length) return showErr('Modifica rifiutata dal database (permessi RLS).');
+  clearErr(); it.done=next; it.done_by=next?me.id:null;
+  renderAll(); loadAll();
 }
 
+/* ---------- MODALE LISTA ---------- */
+function openList(list){
+  editingList = list;
+  $('mod-title').textContent = list ? 'Modifica lista' : 'Nuova lista';
+  $('ml-name').value = list ? list.name : '';
+  $('ml-kind').value = list ? (list.kind||'shopping') : 'shopping';
+  $('ml-delete').style.display = list ? 'block' : 'none';
+  $('mod-list').classList.add('on');
+  setTimeout(()=>$('ml-name').focus(),50);
+}
+const closeList = () => $('mod-list').classList.remove('on');
+$('ml-cancel').onclick = closeList;
+$('mod-list').onclick = e => { if(e.target.id==='mod-list') closeList(); };
+
+$('form-list').onsubmit = async e => {
+  e.preventDefault();
+  const rec = { name:$('ml-name').value.trim(), kind:$('ml-kind').value };
+  let error;
+  if(editingList){
+    ({ error } = await sb.from('lists').update(rec).eq('id',editingList.id));
+  }else{
+    rec.position = lists.length ? Math.max(...lists.map(l=>l.position||0))+1 : 1;
+    const r = await sb.from('lists').insert(rec).select();
+    error = r.error;
+    if(!error && r.data && r.data.length) activeList = r.data[0].id;
+  }
+  if(error) return showErr('Salvataggio lista: '+error.message);
+  clearErr(); closeList(); loadAll();
+};
+
+$('ml-delete').onclick = async () => {
+  if(!editingList) return;
+  const n = items.filter(i=>i.list_id===editingList.id).length;
+  const msg = n
+    ? `Eliminare "${editingList.name}" e i suoi ${n} elementi?`
+    : `Eliminare la lista "${editingList.name}"?`;
+  if(!confirm(msg)) return;
+  const { error } = await sb.from('lists').delete().eq('id',editingList.id);
+  if(error) return showErr('Eliminazione lista: '+error.message);
+  clearErr(); closeList(); activeList=null; loadAll();
+};
+
+/* ---------- MODALE ATTIVITÀ ---------- */
+function openItem(it){
+  editingItem = it;
+  modOwners = [...(it.owners||[])];
+  $('mi-text').value = it.text;
+  $('mi-due').value = it.due_date || '';
+  renderOwnerPicker($('mi-owners'), modOwners);
+  $('mod-item').classList.add('on');
+}
+const closeItem = () => $('mod-item').classList.remove('on');
+$('mi-cancel').onclick = closeItem;
+$('mod-item').onclick = e => { if(e.target.id==='mod-item') closeItem(); };
+
+$('form-edit-item').onsubmit = async e => {
+  e.preventDefault();
+  const { error } = await sb.from('list_items').update({
+    text: $('mi-text').value.trim(),
+    due_date: $('mi-due').value || null,
+    owners: modOwners
+  }).eq('id', editingItem.id);
+  if(error) return showErr('Salvataggio attività: '+error.message);
+  clearErr(); closeItem(); loadAll();
+};
+
+/* ---------- CLICK GLOBALI ---------- */
 document.addEventListener('click', async e => {
-  const t = e.target.closest('[data-toggle],[data-del-it],[data-del-ev],[data-list]');
+  const o = e.target.closest('[data-own]');
+  if(o){
+    const id=o.dataset.own;
+    const inMod = !!o.closest('#mi-owners');
+    const arr = inMod ? modOwners : newOwners;
+    const k = arr.indexOf(id);
+    k>=0 ? arr.splice(k,1) : arr.push(id);
+    o.classList.toggle('on');
+    return;
+  }
+
+  if(e.target.id==='tab-add'){ openList(null); return; }
+
+  const t = e.target.closest('[data-toggle],[data-del-it],[data-edit-it],[data-del-ev],[data-list]');
   if(!t) return;
-  if(t.dataset.list){ activeList=t.dataset.list; renderAll(); return; }
+
+  if(t.dataset.list){ activeList=t.dataset.list; newOwners=[]; renderLists(); return; }
   if(t.dataset.delEv){
     const {error}=await sb.from('events').delete().eq('id',t.dataset.delEv);
     if(error) return showErr('Eliminazione: '+error.message);
     loadAll(); return;
+  }
+  if(t.dataset.editIt){
+    const it=items.find(i=>i.id===t.dataset.editIt);
+    if(it) openItem(it);
+    return;
   }
   if(t.dataset.delIt){
     const {error}=await sb.from('list_items').delete().eq('id',t.dataset.delIt);
@@ -423,23 +668,21 @@ document.addEventListener('click', async e => {
   if(t.dataset.toggle){ toggleItem(t.dataset.toggle); }
 });
 
-/* diagnostica */
+$('btn-edit-list').onclick = () => { const c=curList(); if(c) openList(c); };
+
+/* ---------- DIAGNOSTICA ---------- */
 $('btn-test').onclick = async () => {
   const out=$('test-out'); out.textContent='Verifica in corso…';
   const lines=[];
-  const r1 = await sb.from('list_items').select('id').limit(1);
+  const r1=await sb.from('list_items').select('id,due_date,owners').limit(1);
   lines.push(r1.error ? '❌ lettura list_items: '+r1.error.message : '✅ lettura list_items');
-  if(r1.data && r1.data.length){
-    const id=r1.data[0].id;
-    const r2 = await sb.from('list_items').update({done:false}).eq('id',id).select();
-    if(r2.error) lines.push('❌ modifica: '+r2.error.message);
-    else if(!r2.data.length) lines.push('❌ modifica bloccata: manca la policy UPDATE su list_items');
-    else lines.push('✅ modifica consentita');
-  } else lines.push('ℹ️ nessun elemento da testare: aggiungine uno');
+  const r2=await sb.from('lists').select('id,kind').limit(1);
+  lines.push(r2.error ? '❌ colonna lists.kind mancante: esegui la migrazione' : '✅ colonne nuove presenti');
   lines.push('👤 utente: '+(me?me.email:'non autenticato'));
   out.innerHTML=lines.join('<br>');
 };
 
+/* ---------- NAV ---------- */
 document.querySelectorAll('nav button').forEach(b=>{
   b.onclick=()=>{
     document.querySelectorAll('nav button').forEach(x=>x.classList.remove('on'));
